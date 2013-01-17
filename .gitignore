@@ -6,3 +6,5 @@ tmp/
 *~
 public/system
 Gemfile
+public/*.cache
+public/views
