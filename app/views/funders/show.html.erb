@@ -1,0 +1,21 @@
+<div class="pf-form">
+	<div class="pf-element">
+		<fieldset>
+			<h1>View Funder</h1>
+
+			<p>
+				<b>Name:</b>
+				<%=h @funder.fullname %>
+			</p>
+
+			<p>
+				<b>Description:</b>
+				<%=h @funder.description %>
+			</p>
+
+			<br/>
+			<a href="/funders/<%= @funder.id %>/edit" style="text-decoration:none;"><span class="myButton">Edit This Funder</span></a> | 
+			<a href="/funders/new" style="text-decoration:none;"><span class="myButton">Create New Funder</span></a>
+		</fieldset>
+	</div>
+</div>

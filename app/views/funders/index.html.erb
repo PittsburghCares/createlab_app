@@ -1,0 +1,14 @@
+<h1>Listing Funders</h1>
+
+<%= image_tag("spinner.gif",
+	:align => "middle",
+	:border => 0,
+	:id => "spinner",
+	:style =>"display: none;" ) 
+%>
+
+<div id="table" style="width: 1004px">
+	<%= render :partial => 'list_funders' %>
+</div>
+
+<br/>

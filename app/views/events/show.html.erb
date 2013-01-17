@@ -1,0 +1,120 @@
+<div class="pf-form">
+	<div class="pf-element">
+		<fieldset>
+			<h1>Event: <%=h @event.name %></h1>
+
+			The current state of this event is: <b><u><%=h human_readable_status(@event.is_published) %></u></b>
+
+			<p>
+				<b>Project:</b>
+				<%=h @event.page.project.name %>
+			</p>
+
+			<p>
+				<b>Page:</b>
+				<%=h @event.page.name %>
+			</p>
+
+			<p>
+				<b>Organizations Actively Involved:</b>
+				<%=h @event.organization_list %>
+			</p>
+
+			<p>
+				<b>Student Dialogs:</b>
+				<%=h @event.connection_dialog_list %>
+			</p>
+
+			<p>
+				<b>Affiliated Organizations:</b>
+				<%=h @event.affiliation_list %>
+			</p>
+
+			<p>
+				<b>Impact Location:</b>
+				<%=h @event.location.first.to_s %>
+			</p>
+
+			<p>
+				<b>Arenas:</b>
+				<%=h @event.arena_list %>
+			</p>
+
+			<p>
+				<b>Geographic Scope:</b>
+				<%=h @event.geographic_scope.first.to_s %>
+			</p>
+
+			<p>
+				<b>Start date:</b>
+				<%=h @event.start_date.strftime('%B %d, %Y') if @event.start_date %>
+			</p>
+
+			<p>
+				<b>End date:</b>
+				<%=h @event.end_date.strftime('%B %d, %Y') if @event.end_date %>
+			</p>
+
+			<p>
+				<b>Preschool Count:</b>
+				<%=h @event.pre_school %>
+			</p>
+
+			<p>
+				<b>Elementary Count:</b>
+				<%=h @event.elementary_school %>
+			</p>
+
+			<p>
+				<b>Middle School Count:</b>
+				<%=h @event.middle_school %>
+			</p>
+
+			<p>
+				<b>High School Count:</b>
+				<%=h @event.high_school %>
+			</p>
+
+			<p class="hidden">
+				<b>Adult Count:</b>
+				<%=h @event.adult %>
+			</p>
+
+            <p>
+                <b>Mentor Count:</b>
+                <%=h @event.mentors %>
+            </p>
+
+			<p>
+				<b>Primary Organization Contact Person:</b>
+				<%=h @event.partner_contact %>
+			</p>
+
+			<p>
+				<b>Lab Contact Person:</b>
+				<%=h @event.lab_contact %>
+			</p>
+
+			<p>
+				<b>Tags:</b>
+				<%=h @event.tag_list %>
+			</p>
+
+			<p>
+				<b>Web Links:</b>
+				<%=h @event.web_link_list %>
+			</p>
+
+			<p>
+				<b>Comments:</b>
+				<%=h @event.comments %>
+			</p>
+
+			<br/>
+
+			<a href="/events/<%= @event.id %>/edit" style="text-decoration:none;"><span class="myButton">Edit This Event</span></a> |
+			<a href="/events/new" style="text-decoration:none;"><span class="myButton">Create New Event</span></a> |
+			<a href="/users/manage_events" style="text-decoration:none;"><span class="myButton">Manage My Events</span></a>
+		</fieldset>
+	</div>
+</div>

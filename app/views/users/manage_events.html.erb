@@ -1,0 +1,41 @@
+<h1>My Events</h1>
+
+<form name="sform" id="sform" action="" style="display:inline;" class="pf-form">
+	<div class="pf-element2">
+
+	Search: <select id="search_type" name="search_type" class="pf-field">
+                  <option value="all">All</option>
+                  <option value="affiliation">Affiliated Organization</option>
+                  <option value="arena">Arena</option>
+                  <option value="name">Event Name</option>
+                  <option value="geographic_scope">Geographic Scope</option>
+                  <option value="location">Impact Location</option>
+                  <option value="organization">Organization</option>
+                  <option value="pages.name"><%= $pages_name_replacement.capitalize %></option>
+                  <option value="projects.name"><%= $projects_name_replacement.capitalize %></option>
+                  <option value="connection_dialog">Student Dialogue</option>
+                  <option value="tag">Tag</option>
+	</select>
+	<input id="search_query" name="search_query" type="text" size="35" class="pf-field" />
+	</div>
+</form>
+
+<%= observe_form 'sform',  :frequency => 1,
+	:before => "Element.show('spinner')",
+	:success => "Element.hide('spinner')",
+	:url => {:action => 'list_events', :sort => "#{session[:sort]}"} 
+%>
+
+<%= image_tag("spinner.gif",
+	:align => "middle",
+	:border => 0,
+	:id => "spinner",
+	:style =>"display: none;" ) 
+%>
+<br/>
+<div id="table">
+	<%= render :partial => 'events/list_events' %>
+</div>
+
+<br /><br />
+

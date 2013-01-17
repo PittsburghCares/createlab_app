@@ -1,0 +1,15 @@
+<div class="pf-element">
+	<label>
+    <span class="pf-label">Name<span class="requiredField">*</span></span>
+    <span class="pf-note">The full name of a funder.</span>			
+    <%= f.text_field(:fullname, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+	</label>
+</div>
+
+<div class="pf-element">
+	<label>
+		<span class="pf-label">Description</span>
+		<span class="pf-note">A short description of who this funder is and what they are funding.</span>
+		<%= f.text_area(:description, :cols => 23, :rows => 5, :class=>"pf-field") %>
+	</label>
+</div>

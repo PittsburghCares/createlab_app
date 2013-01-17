@@ -1,0 +1,67 @@
+<a href="javascript:void(0);" id="leftimg" title="Previous" style="background:url(/images/outreach/blank.jpg) center no-repeat;">
+  <span class="nextprev"></span>
+</a>
+<div id="leftbar"></div>
+
+<% if @project.project_image.blank? %>
+  <a href="javascript:void(0);" id="rightimg" title="Next" style="background:url(/images/outreach/blank.jpg) center no-repeat;">
+<% else %>
+  <a href="javascript:void(0);" id="rightimg" title="Next" style=<%= "\"background:url(" + "#{@project.project_image.image.url(:large)}" + ") center no-repeat;\"" %>>
+<% end %>
+    <span class="nextprev"></span>
+  </a>
+  
+<div id="text">
+
+  <div id="breadcrumbs">
+    <a href="/<%= $projects_name_replacement %>" title="See all <%= $projects_name_replacement %>" ><%= $projects_name_replacement.capitalize %></a>
+  </div>
+  
+  <h1 class="viewingtitle"></h1>
+  <p>
+    <%= @project.description %>
+  </p>
+
+  <% @project.project_web_links.each do |web_link| %>
+    <a href="<%= web_link.link %>" class="launch" target="_blank"><%= web_link.label %></a><br/>
+  <% end %>
+  
+  <%= render :partial => 'static/get_involved', :locals => {:project_email => @project.email} %>
+	
+  <div id="currentinfo" style="width:520px !important">
+    <span class="statspopup">
+      <a href="javascript:void(0);" class="close">x</a>
+      <span class="popuppeople">
+        <h4>People involved with</h4>
+        <h2 class="viewingtitle"></h2>
+        <ul id="list_current_selection_people_stats"></ul>
+      </span>
+      <span class="popuporganizations">
+        <div id="organizations">
+          <h4>Organizations actively involved with</h4>
+          <h2 class="viewingtitle"></h2>
+          <p id="list_current_selection_org_stats"></p>
+        </div>
+        <div id="affiliations" style="display: none">
+          <h4>Organizations affiliated with</h4>
+          <h2 class="viewingtitle"></h2>
+          <p id="list_current_selection_affiliated_stats"></p>
+        </div>
+      </span>
+      <span class="popuplocations">
+        <h4>Locations of</h4>
+        <h2 class="viewingtitle"></h2>
+        <div id="map_canvas" style="width:800px; height:270px"></div>
+      </span>
+    </span>
+    <span class="currenttitle"><span class="viewingtitle"></span> Stats</span>
+    <span class="currentstats">
+      <% if @project.has_outreach %>
+        <img class="loading" style="margin: -7px 35px 0px 0px" src="/images/spinner_light.gif" alt="loading" />
+        <span id="current_stats" style="display: none"><a href="javascript:void(0);" class="leftborder statpeople" id="current_statpeople"></a><a href="javascript:void(0);" class="statorganizations" id="current_statorganizations"></a><a href="javascript:void(0);" class="statlocations"><img src="/images/location_dark.png" width="15" height="20" alt="show locations" /></a></span>
+      <% else %>
+        <div><p><b><%= @project.status %></b></p></div>
+      <% end %>
+    </span>
+  </div>
+</div>

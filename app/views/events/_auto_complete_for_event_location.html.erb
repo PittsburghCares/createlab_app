@@ -1,0 +1,5 @@
+<ul class="full_names">
+  <% for location in @locations do -%>
+    <li id=<%= location.object_id %>><%=h "#{location}" %></li>
+  <% end -%>
+</ul>

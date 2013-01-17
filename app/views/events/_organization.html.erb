@@ -1,0 +1,12 @@
+<div class="child">
+  <table style="margin: 0px 0px 0px -3px">
+    <tr>
+      <td>
+        <%= text_field_with_auto_complete 'organizations', "organization_#{child_id}_NEW", {:value => value, :size => 30, :class=>"pf-field"}, { :with => "'organization='+encodeURIComponent(element.value)+'&auto_complete_id='+element.id", :method => :get, :skip_style => true, :after_update_element => "function(element,selectedElement){" + remote_function(:url => { :action => :clear_message }) + ";" + "}"} %>
+      </td>
+      <td>
+        <%= remove_child_link 'remove', f %>
+      </td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,5 @@
+<ul class="full_names">
+  <% for connection_dialog in @connection_dialogs do -%>
+    <li id=<%= connection_dialog.object_id %>><%=h "#{connection_dialog}" %></li>
+  <% end -%>
+</ul>

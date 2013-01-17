@@ -1,0 +1,19 @@
+Hi <%=h @user.first_name %>,
+
+Your <%= $organization_name %> management account has been successfully activated!
+
+You can access the management area by going to: <%=h @url %>
+
+After you log in, please click on "manage my profile" to select all the <%= $projects_name_replacement %>
+with which you are associated. Before entering any event information on the website, 
+please set up a meeting with Clara or Dror. We would like to enter the first 
+few events together with you. 
+
+
+For future reference, here are your account details:
+
+Username: <%=h @user.login %>
+
+For security reasons, your password is not included in this message. If you ever
+forget your password, you can request a new one on the Outreach website by using 
+the email address with which you registered.

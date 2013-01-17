@@ -1,0 +1,53 @@
+<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+  <fieldset>
+    <legend>About Me</legend>
+
+    <div class="pf-element">
+      <label>
+        <span class="pf-label">First Name</span>
+        <%= f.text_field(:first_name, :size => 30, :class=>'pf-field') %>
+      </label>
+    </div>
+
+    <div class="pf-element">
+      <label>
+        <span class="pf-label">Last Name</span>
+        <%= f.text_field(:last_name, :size => 30, :class=>'pf-field') %>
+      </label>
+    </div>
+
+    <div class="pf-element">
+      <label>
+        <span class="pf-label">Email</span>
+        <%= f.text_field(:email, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
+<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+  <fieldset>
+    <legend>Account Information</legend>
+
+    <div class="pf-element">
+      <label>
+        <span class="pf-label">Username</span>
+        <%= f.text_field(:login, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+      </label>
+    </div>
+
+    <div class="pf-element">
+      <label>
+        <span class="pf-label">Password</span>
+        <%= f.password_field(:password, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+      </label>
+    </div>
+
+    <div class="pf-element">
+      <label>
+        <span class="pf-label">Confirm Password</span>
+        <%= f.password_field(:password_confirmation, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+      </label>
+    </div>
+  </fieldset>
+</div>

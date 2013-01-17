@@ -1,0 +1,18 @@
+<% form_for(@funder, :html => {:class => "pf-form"}) do |f| %>
+	<div class="pf-element">
+		<fieldset style="width: 970px">
+	<%= f.error_messages %>
+	
+	<div class="pf-element pf-heading">
+    <h2>Edit Funder</h2>
+    <p>Edit a funder entry.</p>
+	</div>
+	
+	<%= render :partial => 'form', :locals => {:f => f}%>
+
+	<div class="pf-element pf-buttons" style="border-bottom: none !important; min-width: 0px !important">
+		<%= submit_tag 'Update', :class=>"button", :id=>"saveForm" %>
+	</div>
+	</fieldset>
+	</div>
+<% end %>

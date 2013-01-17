@@ -1,0 +1,43 @@
+<div class="pf-form">
+  <div class="pf-element">
+    <fieldset style="width: 970px; padding: 20px 0px 0px 30px !important;">
+      <h1>Management Area</h1>
+      <div>
+        <br/>
+          <% if current_user.is_admin? %>
+            <font size="5"><b>Welcome, Admin!</b></font>
+          <% else %>
+            <font size="5"><b>Welcome, <%= h(current_user.first_name) %>!</b></font>
+          <% end %>
+
+          <% if current_user.is_admin? %>
+            <br/><br/><br/>
+
+            <a href="/events/new" style="text-decoration:none;"><span class="myButton2">Create New Event</span></a> | 
+            <a href="/<%= $pages_name_replacement %>/new" style="text-decoration:none;"><span class="myButton2">Create New <%= $pages_name_replacement.capitalize %></span></a> | 
+            <a href="/<%= $projects_name_replacement %>/new" style="text-decoration:none;"><span class="myButton2">Create New <%= $projects_name_replacement.capitalize %></span></a> | 
+            <a href="/funders/new" style="text-decoration:none;"><span class="myButton2">Create New Funder</span></a>
+
+            <br/><br/><br/>
+            <a href="/events" style="text-decoration:none;"><span class="myButton2">Manage Events</span></a> | 
+            <a href="/users/manage_<%= $pages_name_replacement %>" style="text-decoration:none;"><span class="myButton2">Manage <%= $pages_name_replacement.capitalize %></span></a> | 
+            <a href="/users/manage_<%= $projects_name_replacement %>" style="text-decoration:none;"><span class="myButton2">Manage <%= $projects_name_replacement.capitalize %></span></a> | 
+            <a href="/funders" style="text-decoration:none;"><span class="myButton2">Manage Funders</span></a>
+
+            <br/><br/><br/>
+          <% else %>
+            <br/><br/><br/>
+
+            <a href="/events/new" style="text-decoration:none;"><span class="myButton2">Create New Event</span></a>
+            <br/><br/><br/>
+
+            <a href="/users/manage_events" style="text-decoration:none;"><span class="myButton2">Manage My Events</span></a> 
+            <br/><br/><br/>
+          <% end %>
+          <a href="/users/manage_profile" style="text-decoration:none;"><span class="myButton2">Manage My Profile</span></a> 
+
+        </div>
+      <br/><br/>
+    </fieldset>
+  </div>
+</div>

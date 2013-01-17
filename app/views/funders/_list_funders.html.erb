@@ -1,0 +1,35 @@
+<%= page_entries_info(@funders) %>
+<br/><br/>
+
+<a href="/funders/new" style="text-decoration:none;"><span class="myButton">Create New Funder</span></a>
+<br/><br/>
+
+<%= will_paginate(@funders, :renderer => 'RemoteLinkRenderer', :params => {:filter => params[:filter], :search_type => params[:search_type], :sort => params[:sort]}) %>
+
+<table class="fancy" style='table-layout:auto'>
+	<thead>
+		<tr>	
+			<td <%= sort_td_class_helper "fullname" %>>
+				<div <%= sort_td_class_helper "fullname" %>></div>
+				<%= sort_link_helper "Name", "fullname", "list_funders", "table" %>
+			</td>
+			<td>Description</td>
+			<% if current_user.is_admin? %>
+				<td>Edit</td>
+				<td>Delete</td>
+			<% end %>
+		</tr>
+	</thead>
+
+<% @funders.each do |funder| %>
+  <tr>
+    <td width="300"><%=h funder.fullname %></td>
+    <td><%=h funder.description %></td>
+		<% if current_user.is_admin? %>
+      <td><%= link_to(image_tag("edit.gif", :border =>0, :title => "Edit this funder") ,:action => :edit,  :id  =>  funder.id) %></td>
+      <td><%= link_to(image_tag("cross.png", :border =>0, :title => 'Delete this funder'), funder, :confirm => 'Clicking OK will permanently delete this funder.', :method => :delete) %></td>
+		<% end %>
+	</tr>
+<% end %>
+</table>
+<%= will_paginate(@funders, :renderer => 'RemoteLinkRenderer', :params => {:filter => params[:filter], :search_type => params[:search_type], :sort => params[:sort]}) %>

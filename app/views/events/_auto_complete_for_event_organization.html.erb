@@ -1,0 +1,5 @@
+<ul class="full_names">
+  <% for org in @organizations do -%>
+    <li id=<%= org.object_id %>><%=h "#{org}" %></li>
+  <% end -%>
+</ul>

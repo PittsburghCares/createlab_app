@@ -1,0 +1,14 @@
+<h1>Listing <%= $projects_name_replacement.capitalize %></h1>
+
+<%= image_tag("spinner.gif",
+	:align => "middle",
+	:border => 0,
+	:id => "spinner",
+	:style =>"display: none;" ) 
+%>
+
+<div id="table">
+	<%= render :partial => 'list_projects' %>
+</div>
+
+<br/>

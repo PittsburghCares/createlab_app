@@ -1,0 +1,5 @@
+<ul class="full_names">
+  <% for tag in @tags do -%>
+    <li id=<%= tag.object_id %>><%=h "#{tag}" %></li>
+  <% end -%>
+</ul>

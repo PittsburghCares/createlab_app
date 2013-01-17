@@ -1,0 +1,5 @@
+<ul class="full_names">
+  <% for affiliation in @affiliations do -%>
+    <li id=<%= affiliation.object_id %>><%=h "#{affiliation}" %></li>
+  <% end -%>
+</ul>

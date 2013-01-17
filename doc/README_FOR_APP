@@ -1,0 +1,106 @@
+Information:
+------------
+
+  This is a Rails 2.3 application.
+  It makes use of the geokit gem and google maps for location lookups and map usage.
+  ImageMagick is also required for thumbnail generation.
+  The mysql2 gem acts as the database adapter.
+  All required plugins and gems (except mysql2) come bundled, so there is no need to install anything (except perhaps ImageMagick).
+
+
+
+Installation:
+-------------
+
+  1. ImageMagick is required to create the project/page thumbnails. To check that ImageMagick is installed on your sever, run the following command:
+
+    convert --version
+
+  If information about ImageMagick is printed out, you are good to go. If it says 'command not found' you'll have to install ImageMagick.
+  Installation depends upon your OS, so follow the instructions from the ImageMagick website: http://www.imagemagick.org/
+
+
+  2. The mysql2 gem is required for interaction with the MySQL database. It could not be bundled with this project because its files differ depending
+  upon what OS you are running. To install this gem, run the following command:
+
+    gem install mysql2 -v 0.2.18
+
+  Version 0.2.18 (not the latest release) is required because this is a Rails 2.3 app
+
+
+
+Configuration:
+--------------
+
+  The following configuration files need to be modified before deployment:
+
+
+  config/environment.rb
+
+    General mailer settings and general global application information (like the organization name)
+
+  config/mailer.yml
+
+    Mailer settings (username, password, provider, etc)
+
+  config/database.yml
+
+    Database configuration
+
+  config/initializers/site_keys.rb
+
+    Modify the secret key (just change a few of the values (A-F, 0-9 ONLY))
+
+  config/initializers/session_store.rb
+
+    Modify the REST_AUTH_SITE_KEY but only BEFORE you create any new users (just change a few of the values (A-F, 0-9 ONLY))
+
+
+
+Rake Tasks:
+-----------
+
+Once you've setup the database configuration and actually created the database, run the following command
+from the root directory of ../createlab_app on your sever:
+
+  rake db:migrate RAILS_ENV="production"
+  
+The next task creates default roles for your user accounts. The default roles are "admin" and "user". To create these roles,
+run the following command from the root directory of ../createlab_app on your sever:
+
+  rake db:seed RAILS_ENV="production"
+
+
+
+Restarting the Rails App:
+-------------------------
+
+  Anytime you make changes to any of the files of this app, you'll need to restart Rails before your changes actually take affect.
+  To do this, run the following command from the root directory of ../creatlab_app on your sever:
+
+  touch tmp/restart.txt
+
+
+
+Static Content:
+---------------
+
+  Static pages for the site (ie general content pages for your organization that are not meant to change much) are
+  found in: app/views/static/
+
+  The homepage can be modified from the following file: app/views/home/index.html.erb
+
+
+
+Layout:
+-------
+
+  The general layout of the backend and frontend can be modified in the following files:
+
+  app/views/layouts/backend.html.erb
+  app/views/layouts/frontend.html.erb
+
+  The general look of the backend and frontend can be modified in the following files:
+
+  public/stylesheets/backend.css
+  public/stylesheets/frontend.css

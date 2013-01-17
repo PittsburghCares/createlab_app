@@ -1,0 +1,344 @@
+<head>
+   <link href="stylesheets/frontend.css" media="screen" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+
+			@font-face {
+        font-family: 'klavika';
+        src:  url("stylesheets/fonts/Klavika-Light.otf") format("opentype");
+        font-weight:100;
+        font-style: normal;
+			}
+
+			@font-face {
+        font-family: 'klavika';
+        src: url("stylesheets/fonts/Klavika-Medium.otf") format("opentype");
+        font-weight:400;
+        font-style: normal;
+			}
+
+      .title_text {
+        font-size: 18pt;
+        color: #494949;    
+        font-family:klavika, Helvetica, Arial, sans-serif !important;
+      }
+
+      .dark_background_color {
+        background-color: #282521;
+      }
+
+      #main_table {
+        width: 1024px;
+        height: auto;
+        background-color: #ebe7dd;
+      }
+
+      #top_row {
+        height: 82px;
+      }
+
+      .left_margin1 {
+        width: 48px;
+      }
+
+      #left_margin2 {
+        width: 33px;
+      }
+
+      #right_margin {
+        width: 46px;
+      }
+
+      #bottom_margin {
+        height: 47px;
+      }
+
+      .project {
+        margin-bottom: 20px;
+      }
+
+      .project_photo_container {
+        padding-right: 10px;
+      }
+
+      .project_photo {
+        width: 150px;
+        height: 150px;
+        border: 1px solid #777777;
+      }
+
+      .project_name {
+        font-size: 12pt;
+        font-weight: bold;
+        padding-bottom: 10px;
+        color: #494949;
+      }
+
+      .project_description {
+        font-size: 16px;
+        font-family: Helvetica, Arial, sans-serif;
+      }
+
+      #footer2 a {
+        height: 19px;
+        font-style: italic;
+        color: #777777;
+        font-size: 11px;
+        line-height: 14px;
+        font-family: Helvetica, Arial, sans-serif;
+        text-decoration: none;
+      }
+
+      #footer2 p {
+        height: 19px;
+        font-style: italic;
+        color: #777777;
+        font-size: 11px;
+        line-height: 14px;
+        font-family: Helvetica, Arial, sans-serif;
+        text-decoration: none;
+      }
+    </style>
+   
+    <script src="javascripts/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#main_content").hide();
+        $("#footer2").css("margin","0px 0px 23px 0px");
+        $("#backdrop").css("height",$("#main_table").height());
+      });
+    </script>   
+   
+</head>
+<body>
+<table id="main_table" border="0" cellpadding="0" cellspacing="0">
+   <tr id="top_row" valign="top">
+      <td class="left_margin1"></td>
+      <td id="left_margin2" rowspan="3"></td>
+      <td></td>
+    
+      <td id="right_margin" rowspan="3"></td>
+   </tr>
+   <tr>
+      <td class="left_margin1, dark_background_color"></td>
+      <td colspan="2">
+         <p class="title_text">
+            Past Projects
+         </p>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/bow_leg_hopper.png">
+               </td>
+               <td>
+                  <div class="project_name">Bow Leg Hopper</div>
+                  <div class="project_description">
+                     The <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=270" target="_blank">Bow Leg Hopper</a>
+                     is a single-leg, dynamically stabilized planar robot that efficiently traverses rugged terrains under
+                     computer control. It's highly resilient leg utilizes a novel locomotor design that resembles an archer's
+                     bow enabling hopping heights of 50 cm, high efficiency and low power requirements.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/bowgo.png">
+               </td>
+               <td>
+                  <div class="project_name">BowGo</div>
+                  <div class="project_description">
+                     The <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=504" target="_blank">BowGo</a> is a new
+                     kind of pogo stick that bounces higher, farther and more efficiently than conventional devices. The
+                     BowGo is a scaled-up human-sized version of the Bow Leg, using the fiber-reinforced composite
+                     spring technology to store 2-5 times as much elastic energy as conventional steel coil springs,
+                     resulting in smooth, almost frictionless jumping heights of up to four feet.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/canary.png">
+               </td>
+               <td>
+                  <div class="project_name">Canary</div>
+                  <div class="project_description">
+                     A low cost, simple-to-use platform for constructing environmentally reactive communicative works of
+                     art and design. The Canary has been used to develop conversation around issues that affect the
+                     quality of life in a very local sense; monitoring and making kinetic sculptures to describe the
+                     feeling about issues such as air and noise pollution.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/cmucam.png">
+               </td>
+               <td>
+                  <div class="project_name">CMUcam</div>
+                  <div class="project_description">
+                     Inexpensive robots have been limited by their lack of ability to perceive the complexity of the
+                     world. The goal of
+                     <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=503" target="_blank">CMUcam</a>
+                     is to provide simple vision capabilities to small embedded systems in the form of a powerful,
+                     intelligent and inexpensive sensor to increase the potential of small, cheap mobile robots to do
+                     many different types of on-board, real-time vision processing tasks.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/gyrover.png">
+               </td>
+               <td>
+                  <div class="project_name">Gyrover</div>
+                  <div class="project_description">
+                     <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=102" target="_blank">Gyrover</a> is a
+                     single-wheel robot that is stabilized and steered by means of an internal, mechanical gyroscope.
+                     Gyrover can stand and turn in place, move deliberately at low speed, climb moderate grades, and
+                     move stably on rough terrain at high speeds, using its single track and narrow profile for obstacle
+                     avoidance.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/neighborhood_networks.png">
+               </td>
+               <td>
+                  <div class="project_name">Neighborhood Networks</div>
+                  <div class="project_description">
+                     The <a href="http://neighborhood-networks.net/" target="_blank">Neighborhood Networks</a> project was a series of
+                     public participatory design workshops that provided opportunities for neighborhood residents to
+                     engage in the creative exploration and application of robotics and sensing technologies in the
+                     context of neighborhood activism. Our interest is how these neighborhood groups use or might use
+                     emerging technologies as a means to publicly address their concerns of the social, material, and
+                     political conditions of their neighborhoods.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/pprk.png">
+               </td>
+               <td>
+                  <div class="project_name">Palm Pilot Robot Kit</div>
+                  <div class="project_description">
+                     The
+                     <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=414" target="_blank">Palm Pilot Robot Kit</a>
+                     is a design for an easy-to-build, fully autonomous robot controlled by a Palm handheld computer.
+                     Our robot empowers a Palm to move about and sense the nearby environment. The base uses three
+                     "omni-wheels" that allow driving in any direction with independent control of rotation and has
+                     three optical range sensors to "see" the nearby environment up to about a meter away.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/personal_exploration_rover.png">
+               </td>
+               <td>
+                  <div class="project_name">The Personal Rover Project</div>
+                  <div class="project_description">
+                     The
+                     <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=502" target="_blank">Personal Rover Project</a>
+                     aimed to create robots that would inspire and excite children about science and technology. We
+                     believe robots can serve as a fun and rewarding vessel for education, and we are particularly
+                     interested in bringing rovers to the home, the school and the local science center. Personal rovers
+                     are also a compelling way for children and adults to learn about the technology needed for
+                     scientific exploration such as that done by NASA's Mars rovers.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/robot250.png">
+               </td>
+               <td>
+                  <div class="project_name">Robot 250</div>
+                  <div class="project_description">
+                     As Pittsburgh prepared to observe its 250th Anniversary in 2008, the CREATE Lab joined in the
+                     celebrations by including our region's leading role in robotics education and research, which
+                     stretches back to the 1920s. But more than just looking back, Robot 250 highlighted the future of
+                     Pittsburgh, emphasizing educational and creative opportunities in robotics, and giving members of
+                     the public the opportunity to create and interact with robots first hand through workshops and
+                     exhibits all across the city.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/terk.png">
+               </td>
+               <td>
+                  <div class="project_name">TeRK</div>
+                  <div class="project_description">
+                     The <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=565" target="_blank">TeRK</a> project
+                     aims to make educational robotics accessible to a large community of college and pre-college
+                     students as well as home and hobby robot enthusiasts. TeRK includes the development of affordable
+                     robot designs that can be built with hand tools and commercially available off-the-shelf parts,
+                     coupled with open-source software libraries and a web community where curriculum, software, and
+                     robot designs can be readily exchanged.
+                  </div>
+               </td>
+            </tr>
+         </table>
+
+         <table class="project" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+               <td class="project_photo_container">
+                  <img class="project_photo" src="images/past_projects/toy_robots_initiative.png">
+               </td>
+               <td>
+                  <div class="project_name">Toy Robots Initiative</div>
+                  <div class="project_description">
+                     The goal of the
+                     <a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=275" target="_blank">Toy Robots Initiative</a>
+                     is to commercialize robotics technologies in the education, toy and art markets. In achieving this
+                     goal, we aim to excite and inspire public interest and learning in robotics. We look to discover
+                     elegant, non-traditional solutions to robotics problems by working within the cost constraints of
+                     the mass market, utilizing commercial sector high-volume manufacturing to mitigate the cost of
+                     robotics development.
+                  </div>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+   <tr id="bottom_margin">
+      <td class="left_margin1"></td>
+      <td colspan="2"></td>
+   </tr>
+</table>
+<div id="footer2">
+   <p style="margin: 16px 0pt 0pt 80px;">
+      <a href="http://www.ri.cmu.edu/" target="_blank">The Robotics Institute</a>&nbsp;|
+      <a href="http://www.cmu.edu" target="_blank">Carnegie Mellon University</a>
+   </p>
+</div>

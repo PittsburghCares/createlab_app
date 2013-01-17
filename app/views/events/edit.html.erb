@@ -1,0 +1,43 @@
+<%= stylesheet_link_tag('facebox', 'chosen') %>
+<%= javascript_include_tag('jquery.min', 'facebox', 'generic_form', 'create_events_form', 'nested_attributes','chosen.jquery.min') %>
+<%= calendar_date_select_includes %>
+<script type="text/javascript">
+	jQuery.noConflict();
+	jQuery(document).ready(function() {	
+	  jQuery(".chzn-select").chosen({no_results_text: "No match found."});
+	  hide_page_related_fields();
+		setupDefaultFieldText();
+		setupInfoIcon();
+		setupSubmitButtons("#saveForm, #saveForm2");
+		setupFaceBox();
+	  calculate_total_participants();
+	  jQuery(".icount").change(calculate_total_participants);
+	});	
+</script>
+
+<% form_for(@event, :html => {:class => "pf-form"}) do |f| %>
+  <div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+    <fieldset style="width: 970px">
+      <%= f.error_messages %>
+
+      <div class="pf-element pf-heading">
+        <h2>Edit Event</h2>
+        <p>Edit an event entry.</p>
+        <p>Sections marked with <span class="requiredField">*</span> are required.</p>
+      </div>
+
+      <%= render :partial => 'form', :locals => {:f => f}%>
+
+      <div class="pf-element pf-buttons" style="border-bottom: none !important; min-width: 0px !important">
+        <% if @event.is_published %>
+          <%= submit_tag 'Update', :class=>"button", :id=>"saveForm" %>
+        <% else %>
+          <div>
+            <%= submit_tag 'Save as Draft', :class=>"button", :id=>"saveForm" %>
+            <%= submit_tag 'Publish', :class=>"button2", :id=>"saveForm2", :name => "is_published"  %>
+          </div>
+        <% end %>
+      </div>
+    </fieldset>
+  </div>
+<% end %>

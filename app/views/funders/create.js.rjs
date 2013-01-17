@@ -1,0 +1,3 @@
+page << "jQuery.facebox.close();"
+page.replace_html('funder_list', :partial => 'event_funders')
+page.visual_effect :highlight, 'funder', :duration => 3.0

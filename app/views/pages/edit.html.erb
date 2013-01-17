@@ -1,0 +1,42 @@
+<%= stylesheet_link_tag('facebox') %>
+<% content_for :head do -%>
+	<%= javascript_include_tag('jquery.min', 'facebox', 'generic_form', 'create_pages_form', 'nested_attributes') %>
+	<script type="text/javascript">
+		var page_funders = <%= @page.funder_list.split(", ").to_json %>;
+		jQuery.noConflict();
+		jQuery(document).ready(function() {
+
+			if (jQuery("input:radio[name='page[has_outreach]']:checked").val() == "false")
+				show_page_status_field();
+			else
+				hide_page_status_field();
+
+			setupDefaultFieldText();
+			setupInfoIcon();
+			createFaceBox("#new_funder");
+			setupFaceBox();
+			setupSubmitButtons("#saveForm");
+			select_page_funders();
+		});
+	</script>
+<% end %>
+
+<% form_for(@page, :html => {:class => "pf-form", :multipart => true} ) do |f| %>
+  <div class="pf-element">
+    <fieldset style="width: 970px !important">
+      <%= f.error_messages %>
+
+      <div class="pf-element pf-heading">
+        <h2>Edit Page</h2>
+        <p>Edit a page entry.</p>
+      </div>
+
+      <%= render :partial => 'form', :locals => {:f => f}%>		
+
+      <div class="pf-element pf-buttons" style="border-bottom: none !important; min-width: 0px !important">
+        <%= submit_tag 'Update', :class=>"button", :id=>"saveForm" %>
+      </div>
+
+    </fieldset>
+  </div>
+<% end %>

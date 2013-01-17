@@ -1,0 +1,12 @@
+<div class="child">
+  <table style="margin: 0px 0px 0px -3px">
+    <tr>
+      <td>
+        <%= text_field_tag("web_links[]web_link_#{child_id}_NEW", "#{value}", :size=>"30", :class=>"pf-field") %>
+      </td>
+      <td>
+        <%= remove_child_link 'remove', f %>
+      </td>
+    </tr>
+  </table>
+</div>

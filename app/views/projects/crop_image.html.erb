@@ -1,0 +1,99 @@
+<% content_for(:head) do %>
+	<%= stylesheet_link_tag("jquery.Jcrop") %>
+	<%= javascript_include_tag('jquery.min', 'generic_form', 'jquery.Jcrop.min') %>
+	<script type="text/javascript" charset="utf-8">
+	jQuery.noConflict();
+
+	jQuery(document).ready(function() {
+		setupSubmitButtons("#saveForm"); 
+	});
+
+	jQuery(function() {
+		jQuery('#cropbox').Jcrop({
+			onChange: update_crop,
+			onSelect: update_crop,
+			setSelect: [0, 0, 120, 78],
+			minSize: [ 120, 78 ],
+			maxSize: [ 120, 78 ],
+      allowResize: false
+		});
+	});
+
+	function update_crop(coords) {
+		var rx = 120/coords.w;
+		var ry = 78/coords.h;
+		jQuery('#preview').css({
+			width: Math.round(rx * <%= @project.project_image.image_geometry(:medium).width %>) + 'px',
+			height: Math.round(ry * <%= @project.project_image.image_geometry(:medium).height %>) + 'px',
+			marginLeft: '-' + Math.round(rx * coords.x) + 'px',
+			marginTop: '-' + Math.round(ry * coords.y) + 'px'
+		});
+		var ratio = <%= @project.project_image.image_geometry(:original).width %> / <%= @project.project_image.image_geometry(:medium).width %>;
+		jQuery("#crop_x").val(Math.round(coords.x * ratio));
+		jQuery("#crop_y").val(Math.round(coords.y * ratio));
+		jQuery("#crop_w").val(Math.round(coords.w * ratio));
+		jQuery("#crop_h").val(Math.round(coords.h * ratio));
+	}
+	</script>
+<% end %>
+
+<% form_for(@project, :html => {:class => "pf-form"}) do |f| %>
+	<div class="pf-element pf-heading">
+    <h2>Crop <%= $projects_name_replacement.capitalize %> Photo</h2>
+    <p>Create a thumbnail to display for a <%= $projects_name_replacement.capitalize %>.</p>
+	</div>
+
+	<table style="float:left;">
+		<tr>
+			<td style="padding:0px 15px 0px 0px;">
+			  <%= image_tag @project.project_image.image.url(:crop) %>
+			</td>
+			<td>
+        The <%= $projects_name_replacement.capitalize %> thumbnail to the left was automatically generated. If you would like to use it, choose
+        <% if session[:from_event] && session[:from_page] %>
+          <%= link_to "auto crop", "/pages/new?from_event=true", {:style=>"padding: 5px; margin: 0px", :class=>"button"}, custom_flash("#{$projects_name_replacement.singularize.capitalize} successfully modified") %>. <br/><br/>
+        <% elsif session[:from_page] %>
+          <%= link_to "auto crop", "/pages/new", {:style=>"padding: 5px; margin: 0px", :class=>"button"}, custom_flash("#{$projects_name_replacement.singularize.capitalize} successfully modified") %>. <br/><br/>
+        <% else %>
+          <%= link_to "auto crop", "/users/manage_#{$projects_name_replacement}", {:style=>"padding: 5px; margin: 0px", :class=>"button"}, custom_flash("#{$projects_name_replacement.singularize.capitalize} successfully modified") %>. <br/><br/>
+        <% end %>
+				Otherwise, crop your own image below. <br/><br/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			<hr />
+			</td>
+		</tr>
+	</table>
+	<br/>
+
+
+	<%= hidden_field_tag(:from_crop, 1) %>
+	<% f.fields_for :project_image do |pi| %>
+		<% for attribute in [:crop_x, :crop_y, :crop_w, :crop_h] %>
+			<%= pi.hidden_field attribute, :id => attribute %>
+		<% end %>
+  <% end %>
+
+	<div class="pf-element pf-heading">
+		<table>
+			<tr>
+				<td>
+					<%= image_tag @project.project_image.image.url(:medium), :id => "cropbox" %>
+				</td>
+				<td valign="top">
+					<b><u>Preview:</u></b>
+					<div style="width:120px; height:78px; overflow:hidden">
+						<%= image_tag @project.project_image.image.url(:medium), :id => "preview" %>
+					</div>
+				</td>
+			</tr>
+		</table>
+  </div>
+  
+	<div class="pf-element pf-buttons" style="padding-left: 0px !important; margin: 0 0 0 -392px">
+		<%= submit_tag 'Manual Crop', :class=>"button", :id=>"saveForm" %>
+		<div class="spacer"></div>
+	</div>
+<% end %>

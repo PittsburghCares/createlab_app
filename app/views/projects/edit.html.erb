@@ -1,0 +1,43 @@
+<% content_for :head do -%>
+	<%= javascript_include_tag('jquery.min', 'facebox', 'generic_form', 'create_projects_form', 'nested_attributes') %>
+	<script type="text/javascript">
+		jQuery.noConflict()
+		var page_funders = new Array();
+		jQuery(document).ready(function() {
+
+			<% unless @placeholder_page.blank? %>
+        page_funders = <%= @placeholder_page.funder_list.split(", ").to_json %>;
+			<% end %>
+
+			if (jQuery("input:radio[name='project[has_outreach]']:checked").val() == "false")
+				show_project_status_field();
+			else
+				hide_project_status_field();		
+		
+			setupDefaultFieldText();
+			setupInfoIcon();
+			setupSubmitButtons("#saveForm");
+			select_page_funders();
+		});
+	</script>
+<% end %>
+
+<% form_for(@project, :html => {:class => "pf-form", :multipart => true} ) do |f| %>
+  <div class="pf-element">
+    <fieldset style="width: 970px">
+
+      <%= f.error_messages %>
+
+      <div class="pf-element pf-heading">
+        <h2>Edit Project</h2>
+        <p>Edit a project entry.</p>
+      </div>
+
+      <%= render :partial => 'form', :locals => {:f => f}%>		
+
+      <div class="pf-element pf-buttons" style="border-bottom: none !important; min-width: 0px !important">
+        <%= submit_tag 'Update', :class=>"button", :id=>"saveForm" %>
+      </div>
+    </fieldset>
+  </div>
+<% end %>

@@ -1,0 +1,247 @@
+--- !ruby/object:Gem::Specification 
+name: mime-types
+version: !ruby/object:Gem::Version 
+  hash: 41
+  prerelease: 
+  segments: 
+  - 1
+  - 19
+  version: "1.19"
+platform: ruby
+authors: 
+- Austin Ziegler
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2012-06-21 00:00:00 -04:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: rubyforge
+  prerelease: false
+  requirement: &id001 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        hash: 7
+        segments: 
+        - 2
+        - 0
+        - 4
+        version: 2.0.4
+  type: :development
+  version_requirements: *id001
+- !ruby/object:Gem::Dependency 
+  name: minitest
+  prerelease: false
+  requirement: &id002 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 5
+        segments: 
+        - 3
+        - 1
+        version: "3.1"
+  type: :development
+  version_requirements: *id002
+- !ruby/object:Gem::Dependency 
+  name: rdoc
+  prerelease: false
+  requirement: &id003 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 19
+        segments: 
+        - 3
+        - 10
+        version: "3.10"
+  type: :development
+  version_requirements: *id003
+- !ruby/object:Gem::Dependency 
+  name: nokogiri
+  prerelease: false
+  requirement: &id004 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 5
+        segments: 
+        - 1
+        - 5
+        version: "1.5"
+  type: :development
+  version_requirements: *id004
+- !ruby/object:Gem::Dependency 
+  name: hoe-doofus
+  prerelease: false
+  requirement: &id005 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 15
+        segments: 
+        - 1
+        - 0
+        version: "1.0"
+  type: :development
+  version_requirements: *id005
+- !ruby/object:Gem::Dependency 
+  name: hoe-gemspec
+  prerelease: false
+  requirement: &id006 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 15
+        segments: 
+        - 1
+        - 0
+        version: "1.0"
+  type: :development
+  version_requirements: *id006
+- !ruby/object:Gem::Dependency 
+  name: hoe-git
+  prerelease: false
+  requirement: &id007 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 15
+        segments: 
+        - 1
+        - 0
+        version: "1.0"
+  type: :development
+  version_requirements: *id007
+- !ruby/object:Gem::Dependency 
+  name: hoe-seattlerb
+  prerelease: false
+  requirement: &id008 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 15
+        segments: 
+        - 1
+        - 0
+        version: "1.0"
+  type: :development
+  version_requirements: *id008
+- !ruby/object:Gem::Dependency 
+  name: hoe
+  prerelease: false
+  requirement: &id009 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ~>
+      - !ruby/object:Gem::Version 
+        hash: 7
+        segments: 
+        - 3
+        - 0
+        version: "3.0"
+  type: :development
+  version_requirements: *id009
+description: "This library allows for the identification of a file's likely MIME content\n\
+  type. This is release 1.19 with new MIME types. The identification of MIME\n\
+  content type is based on a file's filename extensions.\n\n\
+  MIME::Types for Ruby was originally based on and synchronized with MIME::Types\n\
+  for Perl by Mark Overmeer, copyright 2001 - 2009. As of version 1.15, the data\n\
+  format for the MIME::Type list has changed and the synchronization will no\n\
+  longer happen.\n\n\
+  :include: Licence.rdoc"
+email: 
+- austin@rubyforge.org
+executables: []
+
+extensions: []
+
+extra_rdoc_files: 
+- History.rdoc
+- Licence.rdoc
+- Manifest.txt
+- README.rdoc
+files: 
+- History.rdoc
+- Licence.rdoc
+- Manifest.txt
+- README.rdoc
+- Rakefile
+- lib/mime/types.rb
+- lib/mime/types/application
+- lib/mime/types/application.mac
+- lib/mime/types/application.nonstandard
+- lib/mime/types/application.obsolete
+- lib/mime/types/audio
+- lib/mime/types/audio.nonstandard
+- lib/mime/types/audio.obsolete
+- lib/mime/types/image
+- lib/mime/types/image.nonstandard
+- lib/mime/types/image.obsolete
+- lib/mime/types/message
+- lib/mime/types/message.obsolete
+- lib/mime/types/model
+- lib/mime/types/multipart
+- lib/mime/types/multipart.nonstandard
+- lib/mime/types/multipart.obsolete
+- lib/mime/types/other.nonstandard
+- lib/mime/types/text
+- lib/mime/types/text.nonstandard
+- lib/mime/types/text.obsolete
+- lib/mime/types/text.vms
+- lib/mime/types/video
+- lib/mime/types/video.nonstandard
+- lib/mime/types/video.obsolete
+- mime-types.gemspec
+- test/test_mime_type.rb
+- test/test_mime_types.rb
+- .gemtest
+has_rdoc: true
+homepage: http://mime-types.rubyforge.org/
+licenses: []
+
+post_install_message: 
+rdoc_options: 
+- --main
+- README.rdoc
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  none: false
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      hash: 3
+      segments: 
+      - 0
+      version: "0"
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  none: false
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      hash: 3
+      segments: 
+      - 0
+      version: "0"
+requirements: []
+
+rubyforge_project: mime-types
+rubygems_version: 1.5.2
+signing_key: 
+specification_version: 3
+summary: This library allows for the identification of a file's likely MIME content type
+test_files: 
+- test/test_mime_type.rb
+- test/test_mime_types.rb

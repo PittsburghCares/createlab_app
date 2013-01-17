@@ -1,0 +1,35 @@
+<% form_for(@user, :action => 'update', :html => {:class => "pf-form"}) do |f| %>
+	<div class="pf-element">
+		<fieldset style="width: 970px;">
+			<div class="pf-element pf-heading">
+				<h2>My Account</h2>
+				<p>Manage your account information.</p>
+			</div>
+			<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+				<fieldset>
+					<legend>Account Info</legend>
+					<br/>
+					<a href="/users/<%= current_user.id %>/edit" style="text-decoration:none;"><span class="myButton2">Edit Account Info</span></a><br/><br/>
+					<a href="/change_password" style="text-decoration:none;"><span class="myButton2">Change Password</span></a><br/>
+					<br/>
+				</fieldset>
+			</div>	
+			<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+				<fieldset>
+          <legend>Associated <%= $projects_name_replacement.capitalize %></legend>
+					<div class="pf-heading">
+              <p>Select the <%= $projects_name_replacement %> with which you are associated.<br/> Events that are created by other users 
+							for the projects you select will be available to you on your <%= link_to("event management page", 'manage_events') %>.</p>
+					</div>
+					<% for project in @projects %>
+						<%= check_box_tag "user[project_ids][]", project.id, @user.projects.include?(project) %><%= project.name %>
+						<br/>
+					<% end %>
+					<div class="pf-element pf-buttons" style="border-bottom: none !important; min-width: 0px !important; padding: 0px !important; margin: 10px 0 0 -395px !important">
+						<%= submit_tag 'Submit', :class=>"button", :id=>"saveForm" %>
+					</div>			
+				</fieldset>
+			</div>	
+		</fieldset>
+	</div>		
+<% end %>

@@ -1,0 +1,33 @@
+<%= stylesheet_link_tag('facebox') %>
+<%= javascript_include_tag('jquery.min', 'facebox') %>
+<script type="text/javascript">
+	jQuery.noConflict();
+
+	jQuery(document).ready(function() {
+	 jQuery.facebox.settings.opacity = 0.2
+
+	 jQuery(document).bind('reveal.facebox', function() {
+		 jQuery('#new_funder').submit(function() {
+			 jQuery.post(this.action, jQuery(this).serialize(), null, "script");
+			 return false;
+		 });
+	 });
+	});
+</script>
+
+<% form_for(@funder, :url => {:action => 'create_facebox'}, :html => {:class => "pf-form"}) do |f| %>
+	<%= f.error_messages %>
+	
+	<div class="pf-element pf-heading">
+    <h2>New Funder</h2>
+    <p>Create a new funder entry.</p>
+	</div>
+	
+	<%= render :partial => 'form', :locals => {:f => f}%>		
+
+	<div class="pf-element pf-buttons">
+		<%= submit_tag 'Create', :class=>"button", :id=>"saveForm" %>
+		<div class="spacer"></div>
+	</div>
+
+<% end %>

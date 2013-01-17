@@ -1,0 +1,37 @@
+<%= page_entries_info(@pages) %>
+<br/><br/>
+
+<a href="/<%= $pages_name_replacement %>/new" style="text-decoration:none;"><span class="myButton">Create New <%= $pages_name_replacement.singularize.capitalize %></span></a>
+<br/><br/>
+
+<%= will_paginate(@pages, :renderer => 'RemoteLinkRenderer', :params => {:filter => params[:filter], :search_type => params[:search_type], :sort => params[:sort]}) %>
+
+<table class="fancy" style='table-layout:auto'>
+	<thead>
+		<tr>
+			<td <%= sort_td_class_helper "name" %>>
+				<div <%= sort_td_class_helper "name" %>></div>
+				<%= sort_link_helper "Name", "name", "list_pages", "table" %>
+			</td>
+			<td>Funders</td>
+			<td>Description</td>
+			<% if current_user.is_admin? %>
+				<td>Edit</td>
+				<td>Delete</td>
+			<% end %>
+		</tr>
+	</thead>
+
+	<% @pages.each do |page| %>
+		<tr>
+      <td width="300"><%=h page.name %> <br/><small>(<%= $projects_name_replacement.singularize.capitalize %>: <%=h page.project.name %>)</small></td>
+			<td width="300"><%=h page.funder_list %></td>
+			<td width="500"><%= page.description %></td>
+			<% if current_user.is_admin? %>
+        <td><%= link_to(image_tag("edit.gif", :border =>0, :title => "Edit this #{$pages_name_replacement.singularize}") ,:action  =>  :edit,  :id  =>  page.id) %></td>
+        <td><%= link_to(image_tag("cross.png", :border =>0, :title => "Delete this #{$pages_name_replacement.singularize}"), page, :confirm => "Clicking OK will mark this #{$pages_name_replacement.singularize} as deleted, but WILL NOT permanently delete it.", :method => :delete) %></td>
+			<% end %>
+		</tr>
+	<% end %>
+</table>
+<%= will_paginate(@pages, :renderer => 'RemoteLinkRenderer', :params => {:filter => params[:filter], :search_type => params[:search_type], :sort => params[:sort]}) %>

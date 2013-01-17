@@ -1,0 +1,213 @@
+<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+	<fieldset>
+		<legend>Event Information</legend>
+
+		<div class="pf-element">
+			<span class="pf-label">Page<span class="requiredField">*</span></span>
+			<span class="pf-note"><%= facebox_link_to(image_tag('/images/info1.png', :class=>"info", :border=>"0", :alt=>"Explain", :title=>"What's this?"), :url => {:controller=>'static', :action=>'page_explanation'}) %></span>
+			<span id="page_list">
+
+			<select id="event_page_id" title="Choose a page..." name="event[page_id]" data-placeholder="Choose a page..." style="width:300px;" class="chzn-select">
+				<option value=""></option>
+				<% @projects_pages.each do |project_pages| %>
+					<optgroup label="<%= project_pages[0] %>">
+						<% project_pages[1].each do |page| %>
+							<% if @event.page && @event.page.id == page.id %>
+								<option selected value="<%= page.id %>"><%= page.name %></option>
+							<% else %>
+								<option value="<%= page.id %>"><%= page.name %></option>
+							<% end %>
+						<% end %>
+					</optgroup>
+				<% end %>
+			</select>
+			<%# f.select(:page_id, Page.all.collect {|p| [ p.name, p.id ] }, {:prompt => "Select..."}, {:class=>"pf-field"}) %>
+			</span>
+			<%= link_to(image_tag('/images/write_in_field.png', :border=>"0", :alt=>"Add", :title=>"Add a new page"), :controller=>'pages', :action=>'new', :from_event => true) %>
+			<%= observe_field(:event_page_id, :url => { :action => "show_hide_page_fields"}, :with => 'page_id' ) %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Event Name<span class="requiredField">*</span></span>
+			<span class="pf-note">Helps you easily find/identify this event in a list of events. For internal purposes - not displayed on website.</span>
+			<%= f.text_field(:name, :size=> 50, :class=>"pf-field") %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Organizations Actively Involved</span>
+			<span class="pf-note"><%= facebox_link_to(image_tag('/images/info1.png', :class=>"info", :border=>"0", :alt=>"Explain", :title=>"What's this?"), :url => {:controller=>'static', :action=>'primary_org_explanation'}) %></span>
+			<div><%= f.text_field_with_auto_complete :organization, {:value => "#{@event.organization_list.first}", :size => 30, :class=>"pf-field defaultText", :onclick=>"handleDefaultFieldText(this)", :onblur=>"handleDefaultFieldText(this)" }, { :with => "'organization='+encodeURIComponent(element.value)+'&auto_complete_id='+element.id", :method => :get, :skip_style => true, :after_update_element => "function(element,selectedElement){" + remote_function(:url => { :action => :clear_message }) + ";" + "}"} %>
+			<%= add_child_link 'Add another organization to this event', 'organization', f, "add.png" %></div>
+			<% @event.organization_list.each_with_index do |obj, index| %>
+				<% next if index == 0 %>
+				<%= render :partial => 'organization', :locals => {:f => f, :child_id => obj.object_id.to_i.abs, :value => obj} %>
+			<% end %>
+		</div>
+
+		<div id="student_dialogues_fields" class="pf-element">
+			<span class="pf-label">Student Dialogues</span>
+			<span class="pf-note"><%= facebox_link_to(image_tag('/images/info1.png', :class=>"info", :border=>"0", :alt=>"Explain", :title=>"What's this?"), :url => {:controller=>'static', :action=>'student_dialog_explanation'}) %></span>
+			<div><%= f.text_field_with_auto_complete :connection_dialog, {:value => "#{@event.connection_dialog_list.first}", :size => 30, :class=>"pf-field defaultText", :onclick=>"handleDefaultFieldText(this)", :onblur=>"handleDefaultFieldText(this)" }, { :with => "'connection_dialog='+encodeURIComponent(element.value)+'&auto_complete_id='+element.id", :method => :get, :skip_style => true, :after_update_element => "function(element,selectedElement){" + remote_function(:url => { :action => :clear_message }) + ";" + "}"} %>
+			<%= add_child_link 'Add another student dialogue to this event', 'connection_dialog', f, "add.png" %></div>
+			<% @event.connection_dialog_list.each_with_index do |obj, index| %>
+				<% next if index == 0 %>
+                                <%= render :partial => 'connection_dialog', :locals => {:f => f, :child_id => obj.object_id.to_i.abs, :value => obj} %>
+			<% end %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Affiliated Organizations</span>
+			<span class="pf-note"><%= facebox_link_to(image_tag('/images/info1.png', :class=>"info", :border=>"0", :alt=>"Explain", :title=>"What's this?"), :url => {:controller=>'static', :action=>'affiliation_explanation'}) %></span>
+			<div><%= f.text_field_with_auto_complete :affiliation, {:value => "#{@event.affiliation_list.first}", :size => 30, :class=>"pf-field defaultText", :onclick=>"handleDefaultFieldText(this)", :onblur=>"handleDefaultFieldText(this)" }, { :with => "'affiliation='+encodeURIComponent(element.value)+'&auto_complete_id='+element.id", :method => :get, :skip_style => true, :after_update_element => "function(element,selectedElement){" + remote_function(:url => { :action => :clear_message }) + ";" + "}"} %>
+			<%= add_child_link 'Add another affiliation to this event', 'affiliation', f, "add.png" %></div>
+			<% @event.affiliation_list.each_with_index do |obj, index| %>
+				<% next if index == 0 %>
+                                <%= render :partial => 'affiliation', :locals => {:f => f, :child_id => obj.object_id.to_i.abs, :value => obj} %>
+			<% end %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Impact Location</span>
+			<span class="pf-note">Where on the map will you place a pin to represent the impact/reach<br/> of this event? <br/><br/>US: city, state, USA <br/> Other: city, country</span>
+      <%= f.text_field_with_auto_complete :location, {:value => "#{@event.location_list.first}", :size => 30, :class=>"pf-field defaultText", :onclick=>"handleDefaultFieldText(this)", :onblur=>"handleDefaultFieldText(this)" }, { :with => "'location='+encodeURIComponent(element.value)+'&auto_complete_id='+element.id", :method => :get, :skip_style => true, :after_update_element => "function(element,selectedElement){" + remote_function(:url => { :action => :clear_message }) + ";" + "}"} %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Arena</span>
+			<span class="pf-note">Organizational/social context in which this event is taking place. <br/>(Can be more than one arena per event)</span>
+			<div><%= f.select(:arena, arenas, {:prompt => "Select...", :selected => "#{@event.arena_list.first}" }, {:class=>"pf-field"}) %>
+			<%= add_child_link 'Add another arena to this event', 'arena', f, "add.png" %>
+			<%= add_child_link 'Write in an arena to link to this event', 'arena_write_in', f, "write_in_field.png" %></div>
+			<% @event.arena_list.each_with_index do |obj, index| %>
+				<% next if index == 0 %>
+                                <%= render :partial => 'arena', :locals => {:f => f, :child_id => obj.object_id.to_i.abs, :value => obj} %>
+			<% end %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Geographic Scope</span>
+			<span class="pf-note">Geographic scope of impact. <br/><br/> Regional: SW PA and WV <br/>National: US <br/>International: Anything else</span>
+			<%= f.select(:geographic_scope, geographic_scopes, {:prompt => "Select...", :selected => "#{@event.geographic_scope}" }, {:class=>"pf-field"}) %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Start Date</span>
+			<span class="pf-note">When did this event begin?</span>
+			<%= f.calendar_date_select(:start_date, :class=>"pf-field", :size => 30, :time => false, :year_range => [12.years.ago, 2.years.from_now], :popup => :force) %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">End Date</span>
+			<span class="pf-note">When did/will this event end. Leave open for ongoing event and<br/> come back to add when an event comes to its conclusion.</span>
+			<%= f.calendar_date_select(:end_date, :class=>"pf-field", :size => 30, :time => false, :default_time => "(new Date($('event_start_date').getValue())).stripTime()", :year_range => [12.years.ago, 2.years.from_now], :valid_date_check => "date.stripTime() >= (new Date($('event_start_date').getValue())).stripTime()", :popup => :force) %>
+		</div>
+
+	</fieldset>
+</div>
+
+<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+	<fieldset>
+		<legend>Event Participants</legend>
+		<span class="pf-note" style="width:870px">
+
+		Enter by age, only include people directly engaged by the event (does not count viewers/hits/audience.
+		<br/><br/>Example: A teacher uses Arts & Bots in her classroom with 12 middle school students and a volunteer parent: count the 12 middle school students and 2 adults.
+
+		</span>
+		<div class="pf-element">
+				<br/>
+				<span class="pf-label">Preschool Count</span>
+				<span class="pf-note">Ages 3-4</span>
+        <%= f.text_field(:pre_school, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Elementary Count</span>
+			<span class="pf-note">Ages 5-10</span>
+      <%= f.text_field(:elementary_school, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Middle School Count</span>
+			<span class="pf-note">Ages 11-13</span>
+      <%= f.text_field(:middle_school, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">High School Count</span>
+			<span class="pf-note">Ages 14-17</span>
+      <%= f.text_field(:high_school, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+		</div>
+
+		<div class="pf-element hidden" style="border-bottom: none !important; min-width: 0px !important">
+			<span class="pf-label">Adult Count</span>
+      <%= f.text_field(:adult, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+		</div>
+
+        <div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+			<span class="pf-label">Mentor Count</span>
+      <%= f.text_field(:mentors, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+		</div>
+
+		<div class="pf-element" style="border-bottom: none; border-top: 1px solid #134162; min-width: 70% !important;">
+			<br/>
+			<span class="pf-label">Total Count</span>
+			<span id="total_count" style="font-size: 16px">0</span>
+		</div>
+	</fieldset>
+</div>
+<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+	<br/>
+	<u><b>Note: All fields below are for internal purposes only.</b></u>
+	<br/><br/>
+</div>
+<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+	<fieldset>
+		<legend>Contact Information</legend>
+		<div class="pf-element">
+			<span class="pf-label">Primary Organization Contact Person</span>
+			<span class="pf-note">Who do you work with on this event?</span>
+			<%= f.text_field(:partner_contact, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+		</div>
+		<div class="pf-element">
+			<span class="pf-label">Lab Contact Person</span>
+			<span class="pf-note">Who at CREATE is working with that person on this event?</span>
+			<%= f.text_field(:lab_contact, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+		</div>
+	</fieldset>
+</div>
+
+<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+	<fieldset>
+		<legend>More Information</legend>
+
+		<div class="pf-element">
+			<span class="pf-label">Tags</span>
+			<span class="pf-note">Words/concepts that may be useful to filter data <br/> Example: Health and Wellness. <br/>Note: One tag per field.</span>
+			<div><%= f.text_field_with_auto_complete :tag, {:value => "#{@event.tag_list.first}", :size => 30, :class=>"pf-field defaultText", :onclick=>"handleDefaultFieldText(this)", :onblur=>"handleDefaultFieldText(this)" }, { :with => "'tag='+encodeURIComponent(element.value)+'&auto_complete_id='+element.id", :method => :get, :skip_style => true, :after_update_element => "function(element,selectedElement){" + remote_function(:url => { :action => :clear_message }) + ";" + "}"} %>
+			<%= add_child_link 'Add another tag to this event', 'tag', f, "add.png" %></div>
+			<% @event.tag_list.to_a.each_with_index do |obj, index| %>
+				<% next if index == 0 %>
+                                <%= render :partial => 'tag', :locals => {:f => f, :child_id => obj.object_id.to_i.abs, :value => obj} %>
+			<% end %>
+		</div>
+		<div class="pf-element">
+			<span class="pf-label">Web Links</span>
+                        <span class="pf-note">Note: One link per field. <%= facebox_link_to(image_tag('/images/info1.png', :class=>"info", :border=>"0", :alt=>"Explain", :title=>"What's this?"), :url => {:controller=>'static', :action=>'weblink_explanation'}) %></span>
+			<div><%= text_field_tag("web_links[]web_link_0_1", "#{@event.web_link_list.first}", :size=>"30", :class=>"pf-field") %>
+		  <%= add_child_link 'Add another web link to this event', 'web_link', f, "add.png" %></div>
+			<% @event.web_link_list.each_with_index do |obj, index| %>
+				<% next if index == 0 %>
+                                <%= render :partial => 'web_link', :locals => {:f => f, :child_id => obj.object_id.to_i.abs, :value => obj} %>
+			<% end %>
+		</div>
+
+		<div class="pf-element">
+			<span class="pf-label">Comments</span>
+			<span class="pf-note">Please use this field to capture any other useful/significant data not included above.</span>
+			<%= f.text_area(:comments, :cols => 23, :rows => 7, :class=>"pf-field") %>
+		</div>
+	</fieldset>
+</div>
+
+<%= hidden_field(:event, :user_id, {:value => @user.id}) %>

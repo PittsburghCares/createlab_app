@@ -1,0 +1,19 @@
+# SQLite version 3.x
+#   gem install sqlite3-ruby (not necessary on OS X Leopard)
+
+development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  timeout: 5000
+
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: pghmentoring_cl
+  username: tmpstories
+  password: TMP2012
+  host: db.pghmentoringstories.org
+
+######################To do rakes in production mode######################
+#%> rake db:migrate RAILS_ENV="production"

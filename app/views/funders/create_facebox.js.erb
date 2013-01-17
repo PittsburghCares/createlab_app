@@ -1,0 +1,8 @@
+jQuery("#new_funder input[type=submit]").attr("value", "Please wait...");
+jQuery("#new_funder input[type=submit]").attr("disabled", "disabled");
+jQuery(window).scrollTop(0);
+jQuery('#facebox .content').html("<%= escape_javascript(render(:partial => 'form_facebox') ) %>");
+jQuery('#new_funder').submit(function() {
+  jQuery.post(this.action, jQuery(this).serialize(), null, "script");
+  return false;
+});

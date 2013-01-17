@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title><%= $organization_name %></title>
+    <%= stylesheet_link_tag('frontend', 'smoothness/jquery-ui.css') %>
+    <%= javascript_include_tag('jquery.min', 'jquery-ui.min', 'scripts', 'jquery.cookie') %>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <% javascript_tag do %>
+      var filter_type = <%= @filter_type.to_json %>
+      var filter_query = <%= @filter_query.to_json %>
+    <% end %>
+    <!-- begin google analytics -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-10682694-7']);
+      _gaq.push(['_setDomainName', 'cmucreatelab.org']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <!-- end google analytics -->
+  </head>
+  <body>
+    <div id="backdrop"></div>
+    <div id="wrap">
+      <div id="logos">
+        <div id="logos-wrapper">
+          <a href="/">
+            <img id="logo1" class="logo" alt="The Mentoring Partnership" src="/images/mentoringpartnership_logo.png">
+          </a>
+          <a href="/">
+            <img id="logo2" class="logo" alt="The Mentoring Partnership" src="/images/mentoringpartnership_logo.png">
+          </a>
+          <!-- more logos here -->
+        </div>
+      </div>
+      <div id="top_links">
+        <div id="login">
+          <% if current_user -%>
+            Logged in as: <a href="/management" title="Go to management" class="heading" style="text-decoration: none; color:#494949"><b><%=h current_user.login %></b></a> <a href="/logout" title="Log out" class="heading" style="text-decoration: none; color:#494949">(Log out)</a>
+          <% end %>
+        </div>
+        <div style="float: right;">
+          <a class="top_link" id="projects" title="View our <%= $projects_name_replacement.capitalize %>" href="/<%= $projects_name_replacement %>"><%= $projects_name_replacement.capitalize %></a>
+          <a class="top_link" id="about" title="About <%= $organization_name %>" href="/about">About</a>
+          <!-- more links here -->
+        </div>
+      </div>
+      <%= yield %>
+      <div id="main_content">
+        <div id="filter">
+          <div id="mainfilter">
+            <ul>
+              <li>
+                <p>Filter by:</p>
+              </li>
+              <li><a href="/<%= $projects_name_replacement %>" class="all filtering">View all</a></li>
+              <li><a href="javascript:void(0);" class="age">Age Groups</a></li>
+              <li><a href="javascript:void(0);" class="funder">Funders</a></li>
+              <li><a href="javascript:void(0);" class="geo_scope">Geographic Scope</a></li>
+              <li><a href="javascript:void(0);" class="project"><%= $projects_name_replacement.capitalize %></a></li>
+            </ul>
+            <a href="javascript:void(0);" class="current">View all</a>
+          </div>
+          <div id="subfilter" class="project">
+            <ul>
+              <li>
+                <p><%= $projects_name_replacement.capitalize %>:</p>
+              </li>
+              <% cache('all_projects') do %>
+                <% Project.exclude_multi_project.published.each do |project| %>
+                  <li class="project"><a href="javascript:void(0);"><%=h project.name %></a></li>
+                <% end %>
+              <% end %>
+            </ul>
+            <a href="javascript:void(0);" class="current"></a>
+          </div>
+          <div id="subfilter" class="funder">
+            <ul>
+              <li>
+                <p>Funders:</p>
+              </li>
+              <% cache('all_funders') do %>
+                <% Funder.all.each do |funder| %>
+                  <% next if funder.pages.published.blank? %>
+                  <li class="funder"><a href="javascript:void(0);"><%= funder.fullname %></a></li>
+                <% end %>
+              <% end %>
+            </ul>
+            <a href="javascript:void(0);" class="current"></a>
+          </div>
+          <div id="subfilter" class="age">
+            <ul>
+              <li>
+                <p>Age groups:</p>
+              </li>
+              <li class="age"><a id="pre_school" href="javascript:void(0);">Pre-School</a></li>
+              <li class="age"><a id="elementary_school" href="javascript:void(0);">Elementary School</a></li>
+              <li class="age"><a id="middle_school" href="javascript:void(0);">Middle School</a></li>
+              <li class="age"><a id="high_school" href="javascript:void(0);">High School</a></li>
+              <li class="age"><a id="adult" href="javascript:void(0);">Adult</a></li>
+            </ul>
+            <a href="javascript:void(0);" class="current"></a>
+          </div>
+          <div id="subfilter" class="geo_scope">
+            <ul>
+              <li>
+                <p>Geographic Scope:</p>
+              </li>
+              <li class="geo_scope"><a id="International" href="javascript:void(0);">International</a></li>
+              <li class="geo_scope"><a id="National" href="javascript:void(0);">National - USA</a></li>
+              <li class="geo_scope"><a id="Regional" href="javascript:void(0);">Regional - SW PA and WV</a></li>
+            </ul>
+            <a href="javascript:void(0);" class="current"></a>
+          </div>
+          <a href="javascript:void(0);" class="clearfilter">x&nbsp;&nbsp;clear filter</a>
+        </div>
+        <div id="thumbnailcontrols">
+          <div>
+            <a href="javascript:void(0);" id="expandcollapse" class="expand" title="Expand <%= $projects_name_replacement %>"><img src="/images/expand.png" width="17" height="13" alt="expand all" /></a><a href="javascript:void(0);" title="View outreach as list" id="toggleView" class="thumbtoggle"><img src="/images/list.png" alt="show as list" /></a>
+          </div>
+        </div>
+        <div id="thumbnailstats">
+          <div id="currentinfo">
+            <span class="statspopup">
+              <a href="javascript:void(0);" class="close">x</a>
+              <span class="popuppeople">
+                <h4 id="people_filter_text"></h4>
+                <h2 id="people_filter_choice"></h2>
+                <ul id="list_total_people_stats"></ul>
+              </span>
+              <span class="popuporganizations">
+                <div id="all_organizations">
+                  <h4 id="organizations_filter_text"></h4>
+                  <h2 id="organizations_filter_choice"></h2>
+                  <p id="list_total_org_stats"></p>
+                </div>
+                <div id="all_affiliations" style="display: none">
+                  <h4 id="affiliated_organizations_text"></h4>
+                  <h2 id="affiliated_organizations_choice"></h2>
+                  <p id="list_total_affiliated_stats"></p>
+                </div>
+              </span>
+              <span class="popuplocations">
+                <h4 id="locations_filter_text"></h4>
+                <h2 id="locations_filter_choice"></h2>
+                <p>
+                  <div id="map_canvas2" style="width:800px; height:300px"></div>
+                </p>
+              </span>
+            </span>
+            <span id="mainstats" class="currentstats">
+              <span class="currenttitle">Filtered Stats</span>
+              <img class="loading" style="margin: -10px 10px -10px 0px" src="/images/spinner_dark.gif" alt="loading" />
+              <span style="display: none" id="filteredstats"><a href="javascript:void(0);" class="leftborder statpeople" id="filtered_statpeople"></a><a href="javascript:void(0);" class="statorganizations" id="filtered_statorganizations"></a><a href="javascript:void(0);" class="statlocations"><img src="/images/location_light.png" width="15" height="20" alt="show all locations" /></a></span>
+            </span>
+          </div>
+        </div>
+        <div id="bottomcontent">
+          <a href="javascript:void(0);" class="right"></a>
+          <a href="javascript:void(0);" class="left"></a>
+          <div id="thumbnails">
+            <div id="thumbnailscontainer" class="thumbs">
+              <%= @project_slider_html %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      <p>
+        <a href="http://mentoringpittsburgh.org" target="_blank">The Mentoring Partnership of Southwestern Pennsylvania</a>
+      </p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<% form_tag(session_path, :class=>"pf-form") do %>
+	<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+		<fieldset style="width: 970px">
+			<div class="pf-element pf-heading">
+				<h2>Login</h2>
+        <p>Login to manage the work done by <%= $organization_name %>.</p>
+			</div>
+			<div class="pf-element">
+				<label>
+					<span class="pf-label">Username</span>
+					<%= text_field_tag('login', @login, :size => 30, :maxlength=>"40", :class=>'pf-field') %>
+				</label>
+			</div>
+			<div class="pf-element">
+				<label>
+					<span class="pf-label">Password</span>
+					<%= password_field_tag('password', nil, :size => 30, :class=>'pf-field') %>
+				</label>
+			</div>
+
+			<div class="pf-element">
+				<label>
+					<span class="pf-label">Remember Me</span>
+						<%= check_box_tag('remember_me', '1', @remember_me, :class=>'pf-field') %>
+				</label>
+			</div>
+			
+			<div class="pf-element pf-buttons" style="border-bottom: none !important; min-width: 0px !important">
+				<%= submit_tag 'Login', :class=>"button" %>
+		
+			</div>
+
+			<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+				<%= link_to('Forgot Password?', '/forgot_password', :class=>"link") %> | <%= link_to('Need to Register?', '/register', :class=>"link") %>	
+			</div>	
+		</fieldset>
+	</div>
+<% end %>

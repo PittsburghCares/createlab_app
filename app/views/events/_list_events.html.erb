@@ -1,0 +1,263 @@
+<%= javascript_include_tag('jquery.min') %>
+<script type="text/javascript">
+
+	jQuery.noConflict();
+
+	jQuery(function(){
+		jQuery(".wrapper1").scroll(function(){
+			jQuery(".wrapper2")
+					.scrollLeft(jQuery(".wrapper1").scrollLeft());
+		});
+		jQuery(".wrapper2").scroll(function(){
+			jQuery(".wrapper1")
+					.scrollLeft(jQuery(".wrapper2").scrollLeft());
+		});
+	});
+
+</script>
+<%= javascript_include_tag 'nested_attributes' %>
+<%= page_entries_info(@events) %>
+<br/><br/>
+
+<a href="/events/new" style="text-decoration:none;"><span class="myButton">Create New Event</span></a>
+
+<br/><br/>
+<div style="margin: 6px 0px 0px 0px; float:left;"><%= select_tag :per_page, options_for_select([10,30,50], session[:per_page].to_i),
+          { :onchange =>
+            remote_function(
+                      :loading => "Element.show('spinner')",
+                      :complete => "Element.hide('spinner')",
+                      :url => {:action => 'list_events'},
+                      :with => " 'search_query=' +'#{params[:search_query]}' +
+                           '&search_type=' +'#{params[:search_type]}' +
+                           '&per_page=' +$('per_page').value +
+                           '&sort=' +'#{params[:sort]}'"
+                     )
+          }
+		     %> Events Per Page</div>
+<br/><br/>
+<%= will_paginate(@events, :renderer => 'RemoteLinkRenderer', :params => {:filter => params[:filter], :search_type => params[:search_type], :sort => params[:sort], :per_page => params[:per_page], :search_type => params[:search_type], :search_query => params[:search_query]}) %>
+<br/>
+
+
+<table id="eventtable" cellspacing="0" cellpadding="0">
+  <thead id="main">
+    <tr>
+      <th style="background-color: #ebe7dd; width: 37px !important; min-width: 37px !important; max-width: 37px !important;"></th>
+      <th style="width: 182px !important; min-width: 182px !important; max-width: 182px !important;">
+        <div <%= sort_td_class_helper "project" %> style="color: #fff !important"></div>
+        <div <%= sort_td_class_helper "page" %> style="color: #fff !important"></div>
+        <div <%= sort_td_class_helper "name" %> style="color: #fff !important"></div>
+        <%= sort_link_helper "#{$projects_name_replacement.singularize.capitalize}", "project", "list_events", "table" %>
+        /<%= sort_link_helper "#{$pages_name_replacement.singularize.capitalize}", "page", "list_events", "table" %>
+        /<%= sort_link_helper "Event", "name", "list_events", "table" %>
+      </th>
+      <th style="width: 150px !important; min-width: 150px !important; max-width: 150px !important;">
+        <div <%= sort_td_class_helper "organization" %> style="color: #fff !important"></div>
+        <%= sort_link_helper "Organizations", "organization", "list_events", "table" %>
+      </th>
+      <th style="width: 133px !important; min-width: 133px !important; max-width: 133px !important;">
+        <div <%= sort_td_class_helper "location" %> style="color: #fff !important"></div>
+        <%= sort_link_helper "Impact Location", "location", "list_events", "table" %>
+      </th>
+      <th style="width: 145px !important; min-width: 145px !important; max-width: 145px !important;">Dates</th>
+      <th style="width: 137px !important; min-width: 137px !important; max-width: 137px !important;">People</th>
+      <th style="width: 131px !important; min-width: 131px !important; max-width: 131px !important;">Comments</th>
+      <th style="width: 88px !important; min-width: 88px !important; max-width: 88px !important; color: #fff !important; text-decoration: underline">
+        <div <%= sort_td_class_helper "status" %> style="color: #fff !important"></div>
+        <%= sort_link_helper "Status", "status", "list_events", "table" %>
+      </th>
+      <th style="background-color: #ebe7dd; width: 29px !important; min-width: 29px !important; max-width: 29px !important;"></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @events.each do |event| %>
+    <tr>
+      <% if current_user.is_admin? || current_user.events.include?(event) %>
+        <td align="center" valign="middle"><%= link_to(image_tag("edit.gif", :border =>0, :title => "Edit this event"), :controller => "events", :action => :edit,  :id  =>  event.id) %><br/><br/>
+          <%= link_to(image_tag("cross.png", :border =>0, :title => 'Delete this event'), event, :confirm => 'Clicking OK will mark this event as deleted, but WILL NOT permanently delete it.', :method => :delete) %>
+        </td>
+      <% else %>
+        <td align="center" valign="middle" style="width: 20px !important; min-width: 20px !important; max-width: 20px !important;"></td>
+      <% end %>
+      <td style="width: 165px !important; min-width: 165px !important; max-width: 165px !important;"><font size="4"><%=h event.page.project.name.upcase %></font><br/><font size="3"><i><%=h event.page.name %></i></font><br/><font size="5"><b><%=h event.name %></b></font></td>
+      <td style="width: 133px !important; min-width: 133px !important; max-width: 133px !important;">
+        <div style="max-height:220px; overflow-y: auto">
+          <ul>
+            <% event.organization_list.each do |org| %>
+              <li><%=h org %></li>
+            <% end %>
+          </ul>
+         </div>
+      </td>
+      <td style="width: 116px !important; min-width: 116px !important; max-width: 116px !important;"><%=h event.location_list.first %></td>
+      <td style="width: 128px !important; min-width: 128px !important; max-width: 128px !important;"><b>Start: </b><%=h event.start_date.strftime('%b %d, %Y') if event.start_date %><br/> <b>End: </b><%=h event.end_date.strftime('%b %d, %Y') if event.end_date %></td>
+      <td style="width: 120px !important; min-width: 120px !important; max-width: 120px !important;">
+      	<b>Total: <%=h event.total_participants %></b>
+      	<%= "<br/>Pre-School: #{event.pre_school}" unless event.pre_school == 0 %>
+      	<%= "<br/>Elem School: #{event.elementary_school}" unless event.elementary_school == 0 %>
+      	<%= "<br/>Middle School: #{event.middle_school}" unless event.middle_school == 0 %>
+      	<%= "<br/>High School: #{event.high_school}" unless event.high_school == 0 %>
+      	<%= "<br/>Adults: #{event.adult}" unless event.adult == 0 %>
+        <%= "<br/>Mentors: #{event.mentors}" unless event.mentors == 0 %>
+      </td>
+      <td style="width: 114px !important; min-width: 114px !important; max-width: 114px !important;"><div style="max-height:220px; overflow-y: auto"><%=h event.comments %></div></td>
+      <td style="width: 70px !important; min-width: 70px !important; max-width: 70px !important;"><%= event.is_published ? "<font color=\"green\">" : "<font color=\"red\">" %><%=h human_readable_status(event.is_published) %></font></td>
+    	<td id="event_<%= event.id %>" class="more_info" style="cursor:pointer; color: #FFF; background-color: #c7c3b7; vertical-align:middle !important;"><b>...</b>
+    		<div class="more_info_holder" style="cursor:default; color: #000; display: none; background-color: white; max-height: 300px;overflow:auto; position: absolute; width: 812px;z-index: 10; border-right: 2px solid black; border-left: 2px solid black; border-bottom: 2px solid black;">
+					<div title="Close" class="close_info_holder" style="cursor:pointer; color: #FFF; position: absolute; display: block !important; text-align: right; margin: 0px 0px 0px 765px">X</div>
+					<table cellspacing="0" cellpadding="0">
+						<thead>
+							<tr>
+								<th style="width: 165px; border-top: 2px solid black">Affiliated Organizations</th>
+								<th style="width: 165px; border-top: 2px solid black">Student Dialogues</th>
+								<th style="width: 100px; border-top: 2px solid black">Arena</th>
+								<th style="width: 100px; border-top: 2px solid black">Geographic Scope</th>
+								<th style="width: 150px; border-top: 2px solid black">Lab Contact /<br/>Partner Contact</th>
+								<th style="width: 120px; border-top: 2px solid black;">Tags</th>
+								<th style="width: 18px; background-color: #c7c3b7"></th>
+							</tr>
+						</thead>
+						<tbody>
+              <tr>
+                <td style="width: 165px">
+                  <% if event.affiliation_list.count > 0 %>
+                    <div style="max-height:220px; overflow-y: auto">
+                      <ul>
+                        <% event.affiliation_list.each do |affil_org| %>
+                          <li><%=h affil_org %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% else %>
+                    <p>-----</p>
+                  <% end %>
+                </td>
+                <td style="width: 165px">
+                  <% if event.connection_dialog_list.count > 0 %>
+                    <div style="max-height:220px; overflow-y: auto">
+                      <ul>
+                        <% event.connection_dialog_list.each do |conn_dialog| %>
+                          <li><%=h conn_dialog %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% else %>
+                    <p>-----</p>
+                  <% end %>
+                </td>
+                <td style="width: 100px"><%=h event.arena_list %></td>
+                <td style="width: 100px"><%=h event.geographic_scope_list %></td>
+                <td style="width: 150px"><%=h event.lab_contact %><br/><br/><%=h event.partner_contact %></td>
+                <td style="width: 120px; border: 0px; border-left: 1px dotted grey">
+                  <% if event.tag_list.count > 0 %>
+                    <div style="max-height:220px; overflow-y: auto">
+                      <ul>
+                        <% event.tag_list.each do |tag| %>
+                          <li><%=h tag %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% else %>
+                    <p>-----</p>
+                  <% end %>
+                </td>
+                <td style="width: 18px; background-color: #c7c3b7; border: 0px"></td>
+              </tr>
+						</tbody>
+					</table>
+    		</div>
+    	</td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<br/>
+<%= will_paginate(@events, :renderer => 'RemoteLinkRenderer', :params => {:filter => params[:filter], :search_type => params[:search_type], :sort => params[:sort], :per_page => params[:per_page], :search_type => params[:search_type], :search_query => params[:search_query]}) %>
+<br/>
+
+<script type="text/javascript">
+  TableThing = function(params) {
+      settings = {
+        table: jQuery('#eventtable'),
+        thead: []
+      };
+
+      this.fixThead = function() {
+        // empty our array to begin with
+        settings.thead = [];
+        // loop over the first row of td's in &lt;tbody> and get the widths of individual &lt;td>'s
+        jQuery('tbody tr:eq(1) td', settings.table).each( function(i,v){
+          settings.thead.push(jQuery(v).width()+17); //include padding and whatnot .outerWidth() does not seem to get the right value
+        });
+
+        // now loop over our array setting the widths we've got to the &lt;th>'s
+        for(i=0; i < settings.thead.length; i++) {
+          //jQuery('thead#main th:eq('+i+')', settings.table).width(settings.thead[i]);
+        }
+
+        // here we attach to the scroll, adding the class 'fixed' to the &lt;thead>
+        jQuery(window).scroll(function() {
+            var windowTop = jQuery(window).scrollTop();
+            if (windowTop > settings.table.offset().top) {
+              jQuery("thead#main", settings.table).addClass("fixed");
+            }
+            else {
+              jQuery("thead#main", settings.table).removeClass("fixed");
+            }
+        });
+      }
+  }
+
+  jQuery(function(){
+      var table = new TableThing();
+      table.fixThead();
+      jQuery(window).resize(function(){
+         table.fixThead();
+      });
+
+      jQuery(".more_info").mousedown(function(event) {
+        if (jQuery(event.target).closest(".more_info_holder").get(0) == null) {
+
+          jQuery(".more_info_holder").css("margin",Math.ceil(jQuery(this).innerHeight()-(jQuery(this).innerHeight()*.52+13))+"px 0 0 -797px");
+
+          if (jQuery(this).find('div').css('display') == 'block') {
+            jQuery(this).find('div').slideUp();
+            window.setTimeout(function() {
+              jQuery(".more_info").css("border", "1px dotted gray");
+            }, 400);
+          } else {
+            jQuery(this).find('div').slideDown();
+            jQuery(this).css("border", "0px");
+            jQuery(this).css("border-right", "2px solid black");
+            jQuery(this).css("border-left", "2px solid black");
+            jQuery(this).css("border-top", "2px solid black");
+          }
+        }
+      }).mouseover(function(event) {
+        if (jQuery(event.target).closest(".more_info_holder").get(0) == null)
+          jQuery(this).attr("title", "Click for more info");
+      });
+
+      jQuery(".close_info_holder").click(function(event) {
+        jQuery(this).parent().slideToggle();
+        window.setTimeout(function() {
+          jQuery(".more_info").css("border", "1px dotted gray");
+        }, 400);
+      });
+
+      jQuery(".more_info_holder").mouseover(function(event) {
+        jQuery(".more_info").removeAttr("title");
+      });
+
+      jQuery(document).click(function (event) {
+        if (jQuery(event.target).closest(".more_info").get(0) == null) {
+          jQuery(".more_info_holder").slideUp();
+
+          window.setTimeout(function() {
+            jQuery(".more_info").css("border", "1px dotted gray");
+          }, 400);
+        }
+      });
+  });
+</script>

@@ -1,0 +1,89 @@
+<div class="pf-element">
+	<label>
+		<span class="pf-label">Name<span class="requiredField">*</span></span>
+    <span class="pf-note">The name of this <%= $projects_name_replacement.singularize %>.</span>
+		<%= f.text_field(:name, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+	</label>
+</div>
+
+<div class="pf-element" style="border-bottom: none !important; ">
+	<label>
+		<span class="pf-label">Description</span>
+    <span class="pf-note">A short description of what this <%= $projects_name_replacement.singularize %> is about. This is what will be displayed on the website.</span>
+		<%= f.text_area(:description, :cols => 23, :rows => 5, :onblur=>"limitText(this.form.project_description,this.form.countdown,500);", :onkeydown=>"limitText(this.form.project_description,this.form.countdown,500);", :onkeyup=>"limitText(this.form.project_description,this.form.countdown,500);", :class=>"pf-field") %>
+	</label>
+</div>
+
+<div class="pf-element" style="margin: -50px 0px 0px; min-width: 200px !important;">
+	<font size="2">(500 character limit)<br/>
+	You have <input type="text" readonly="readonly" name="countdown" size="1" value="500" class="pf-field" /> left.</font>
+</div>
+
+<div class="pf-element">
+	<label>
+		<span class="pf-label">Contact Email</span>
+    <span class="pf-note">The email address people will contact with inquiries about this <%= $projects_name_replacement.singularize %>.<br/>
+    e.g. <%= $projects_name_replacement.singularize %>@cmucreatelab.org</span>
+		<%= f.text_field(:email, :size => 30, :maxlength => 100, :class=>"pf-field") %>
+	</label>
+</div>
+
+<div class="pf-element">
+	<span class="pf-label">Web Links</span>
+  <span class="pf-note">Relevant web links. <br/> Ex: <%= $projects_name_replacement.singularize %> website.</span>
+
+  <%= add_child_link2 "Add another web link to this #{$projects_name_replacement.singularize.capitalize}", 'project_web_link', f, "add.png" %>
+
+	<% f.fields_for :project_web_links do |links_form| %>
+		<%= render :partial => 'project_web_link', :locals => {:f => links_form} %> 
+	<% end %>
+</div>
+
+<div class="pf-element">
+  <span class="pf-label">Has Outreach?</span>
+  <span class="pf-note">Does this <%= $projects_name_replacement.singularize %> currently have outreach efforts?</span>
+  <label><%= f.radio_button(:has_outreach, "true", { :checked => true }) %>Yes</label>
+  <label><%= f.radio_button(:has_outreach, "false") %>No</label>
+</div>
+
+<div id="project_status_div" class="pf-element" style="border-bottom: none !important; margin: 0px 0px 0px 40px">
+	<label>
+    <span class="pf-label"><%= $projects_name_replacement.singularize.capitalize %> status</span>
+    <span class="pf-note">If this <%= $projects_name_replacement.singularize %> does not have outreach, put its current status here <br/> (e.g. planning stages, inactive)</span>
+		<%= f.text_field(:status, :size => 30, :maxlength => 30, :onblur=>"limitText(this.form.project_status,this.form.countdown2,30);", :onkeydown=>"limitText(this.form.project_status,this.form.countdown2,30);", :onkeyup=>"limitText(this.form.project_status,this.form.countdown2,30);", :class=>"pf-field") %>
+	</label>
+
+	<div class="pf-element" style="width: 930px !important; ">
+		<font size="2">(30 character limit)<br/>
+		You have <input type="text" readonly="readonly" id="countdown2" name="countdown2" size="1" value="30" class="pf-field" /> left.</font>
+	</div>
+	
+	<div id="funder" class="pf-element" style="width: 930px !important; ">
+		<span class="pf-label">Funders</span>
+		<span class="pf-note">Provides the funding. Select all that apply. Use the CTRL/Command button to select more than one.</span>
+		<span id="funder_list">
+			<%= select_tag('funder_ids[]', options_from_collection_for_select(@funders, "id", "fullname"), :multiple => true, :class=>"pf-field funders", :size=>"5") %>
+		</span>
+		<%= facebox_link_to(image_tag('/images/write_in_field.png', :border=>"0", :class=>"info", :alt=>"Add", :title=>"Add a new funder"), :url => {:controller=>'funders', :action=>'new_facebox'}) %>
+	</div>
+</div>
+
+<div class="pf-element">
+	<label>
+		<% f.fields_for :project_image do |pi| %>
+			<span class="pf-label">Project Image</span>
+			<span class="pf-note"><%= facebox_link_to(image_tag('/images/info1.png', :class=>"info", :border=>"0", :alt=>"Explain", :title=>"What's this?"), :url => {:controller=>'static', :action=>'project_photo_explanation'}) %></span>
+			<%= pi.file_field(:image, :class=>"pf-field")%>
+      <br/>
+      <%= link_to("View currently used image",@project.project_image.image.url(:large), :target => "_blank") if @project.project_image.image.file? %>
+		<% end %>
+	</label>
+</div>
+
+<div class="pf-element" style="width: 100% !important;">
+  <span class="pf-label">Publish <%= $projects_name_replacement.singularize.capitalize %>?</span>
+  <span class="pf-note">Check this field if you want this <%= $projects_name_replacement.singularize %> to be publically viewable. <br/> Keep in mind that you can always edit this entry at a later time.</span>
+	<div class="pf-group">
+		<%= f.check_box(:is_published) %> Yes<br/>
+	</div>
+</div>

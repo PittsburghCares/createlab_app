@@ -1,0 +1,12 @@
+<div class="child">
+  <table style="margin: 0px 0px 0px -3px">
+    <tr>
+      <td>
+        <%= select_tag('arenas[]' "arena_#{child_id}_NEW", options_for_select([['Select...', '']] + arenas, "#{value}"), :class=>"pf-field") %>
+      </td>
+      <td>
+        <%= remove_child_link 'remove', f %>
+      </td>
+    </tr>
+  </table>
+</div>

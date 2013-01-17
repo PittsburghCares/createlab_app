@@ -1,0 +1,27 @@
+<%= javascript_include_tag('jquery.min', 'generic_form') %>
+<script type="text/javascript">
+	jQuery.noConflict();
+
+	jQuery(document).ready(function() {
+		setupSubmitButtons("#saveForm");	
+	});
+</script>
+
+<% form_for(@user, :html => {:class => "pf-form"} ) do |f| %>
+	<%= f.error_messages %>
+	<div class="pf-element">
+		<fieldset style="width: 970px">
+			<div class="pf-element pf-heading">
+				<h2>Register An Account</h2>
+        <p>Create an account to start managing the workd done by <%= $organization_name %>.</p>
+				<p>All fields are required!</p>					
+			</div>
+
+			<%= render :partial => 'form', :locals => {:f => f}%>		
+
+			<div class="pf-element pf-buttons" style="border-bottom: none !important; min-width: 0px !important">
+				<%= submit_tag 'Register', :class=>"button", :id=>"saveForm" %>
+			</div>
+		</fieldset>
+	</div>	
+<% end %>

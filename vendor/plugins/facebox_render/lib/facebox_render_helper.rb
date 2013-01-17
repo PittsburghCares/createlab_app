@@ -1,0 +1,10 @@
+module FaceboxRenderHelper
+
+  def facebox_link_to(name, options = {}, html_options = nil)  
+    
+    html_options = options[:html_options] unless options[:html_options].blank?
+    
+    link_to_function(name, "jQuery.facebox(function(){ #{remote_function(options)} })", html_options || options.delete(:html))
+  end
+
+end
