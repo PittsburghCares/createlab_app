@@ -67,7 +67,7 @@
 		</div>
 
 		<div class="pf-element">
-			<span class="pf-label">Impact Location</span>
+      <span class="pf-label">Impact Location<span class="requiredField">*</span></span>
 			<span class="pf-note">Where on the map will you place a pin to represent the impact/reach<br/> of this event? <br/><br/>US: city, state, USA <br/> Other: city, country</span>
       <%= f.text_field_with_auto_complete :location, {:value => "#{@event.location_list.first}", :size => 30, :class=>"pf-field defaultText", :onclick=>"handleDefaultFieldText(this)", :onblur=>"handleDefaultFieldText(this)" }, { :with => "'location='+encodeURIComponent(element.value)+'&auto_complete_id='+element.id", :method => :get, :skip_style => true, :after_update_element => "function(element,selectedElement){" + remote_function(:url => { :action => :clear_message }) + ";" + "}"} %>
 		</div>
@@ -141,10 +141,10 @@
 
 		<div class="pf-element hidden" style="border-bottom: none !important; min-width: 0px !important">
 			<span class="pf-label">Adult Count</span>
-      <%= f.text_field(:adult, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+      <%= f.text_field(:adult, :size => 5, :maxlength => 100, :class=>"pf-field") %>
 		</div>
 
-        <div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+    <div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
 			<span class="pf-label">Mentor Count</span>
       <%= f.text_field(:mentors, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
 		</div>

@@ -10,6 +10,7 @@ class Event < ActiveRecord::Base
   #validates_uniqueness_of :name
   validates_presence_of :name
   validates_presence_of :page_id
+  validates_presence_of :location
 
   named_scope :published, :conditions => {:is_published => true}
 
