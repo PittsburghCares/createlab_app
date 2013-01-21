@@ -40,7 +40,7 @@ class Event < ActiveRecord::Base
   end
 
   def total_participants
-    pre_school + elementary_school + middle_school + high_school + adult + mentors
+    pre_school + elementary_school + middle_school + high_school + adult + waitlisted + mentors
   end
 
   def organization=(value)

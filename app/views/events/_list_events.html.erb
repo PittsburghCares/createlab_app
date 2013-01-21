@@ -99,6 +99,7 @@
       	<%= "<br/>Middle School: #{event.middle_school}" unless event.middle_school == 0 %>
       	<%= "<br/>High School: #{event.high_school}" unless event.high_school == 0 %>
       	<%= "<br/>Adults: #{event.adult}" unless event.adult == 0 %>
+        <%= "<br/>Adults: #{event.waitlisted}" unless event.waitlisted == 0 %>
         <%= "<br/>Mentors: #{event.mentors}" unless event.mentors == 0 %>
       </td>
       <td style="width: 114px !important; min-width: 114px !important; max-width: 114px !important;"><div style="max-height:220px; overflow-y: auto"><%=h event.comments %></div></td>

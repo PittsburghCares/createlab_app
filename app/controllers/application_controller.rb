@@ -47,6 +47,7 @@ class ApplicationController < ActionController::Base
     total_middle_school = 0
     total_high_school = 0
     total_adults = 0
+    total_waitlisted = 0
     total_mentors = 0
     total_locations = []
 
@@ -58,6 +59,7 @@ class ApplicationController < ActionController::Base
     current_selection_middle_school = 0
     current_selection_high_school = 0
     current_selection_adults = 0
+    current_selection_waitlisted = 0
     current_selection_mentors = 0
     current_selection_locations = []
 
@@ -90,6 +92,7 @@ class ApplicationController < ActionController::Base
       current_selection_middle_school += event.middle_school
       current_selection_high_school += event.high_school
       current_selection_adults += event.adult
+      current_selection_waitlisted += event.waitlisted
       current_selection_mentors += event.mentors
       current_selection_locations << [event.location.first.name,loc.lat,loc.lng]
     end
@@ -107,6 +110,7 @@ class ApplicationController < ActionController::Base
       total_middle_school += event.middle_school
       total_high_school += event.high_school
       total_adults += event.adult
+      total_waitlisted += event.waitlisted
       total_mentors += event.mentors
       total_locations << [event.location.first.name,loc.lat,loc.lng]
     end
@@ -120,6 +124,7 @@ class ApplicationController < ActionController::Base
       total_stats[:total_middle_school] = total_middle_school
       total_stats[:total_high_school] = total_high_school
       total_stats[:total_adults] = total_adults
+      total_stats[:total_waitlisted] = total_waitlisted
       total_stats[:total_mentors] = total_mentors
       total_stats[:total_locations] = total_locations.uniq
 
@@ -138,6 +143,7 @@ class ApplicationController < ActionController::Base
     current_selection_stats[:current_selection_middle_school] = current_selection_middle_school
     current_selection_stats[:current_selection_high_school] = current_selection_high_school
     current_selection_stats[:current_selection_adults] = current_selection_adults
+    current_selection_stats[:current_selection_waitlisted] = current_selection_waitlisted
     current_selection_stats[:current_selection_mentors] = current_selection_mentors
     current_selection_stats[:current_selection_locations] = current_selection_locations.uniq
 
@@ -161,7 +167,7 @@ class ApplicationController < ActionController::Base
       project = Project.first(:select => "projects.name, funders.fullname, funders.id, pages.id, pages.is_published, pages.is_placeholder, pages.is_deleted", :order => 'projects.name ASC', :joins => [{:pages => :funders}], :conditions => ["funders.fullname = ? AND ((pages.is_published = ? AND pages.is_placeholder = ?) OR (pages.is_published = ? AND pages.is_placeholder = ?))", session[:filter_query], true, false, false, true])
     elsif session[:filter_type] == "age"
       query = session[:filter_query].downcase.gsub(/[- ]/,"_") #e.g. High School becomes high_school
-      project = Project.first(:select => "projects.name, events.id, events.pre_school, events.elementary_school, events.middle_school, events.high_school, events.adult, events.mentors, pages.id, pages.is_placeholder, pages.is_deleted, pages.is_published", :order => 'projects.name ASC', :joins => [{:pages => :events}], :conditions => ["#{query} > ? and pages.is_published =?", 0, true])
+      project = Project.first(:select => "projects.name, events.id, events.pre_school, events.elementary_school, events.middle_school, events.high_school, events.adult, events.waitlisted, events.mentors, pages.id, pages.is_placeholder, pages.is_deleted, pages.is_published", :order => 'projects.name ASC', :joins => [{:pages => :events}], :conditions => ["#{query} > ? and pages.is_published =?", 0, true])
     elsif session[:filter_type] == "project"
       project = Project.first(:conditions => ["name = ? and is_published = ?", session[:filter_query], true])
     elsif session[:filter_type] == "geo_scope"

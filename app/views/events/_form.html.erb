@@ -139,12 +139,17 @@
       <%= f.text_field(:high_school, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
 		</div>
 
-		<div class="pf-element hidden" style="border-bottom: none !important; min-width: 0px !important">
+		<div class="pf-element hidden">
 			<span class="pf-label">Adult Count</span>
       <%= f.text_field(:adult, :size => 5, :maxlength => 100, :class=>"pf-field") %>
 		</div>
 
-    <div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
+		<div class="pf-element">
+			<span class="pf-label">Waitlisted Count</span>
+      <%= f.text_field(:waitlisted, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
+		</div>
+
+    	<div class="pf-element" style="border-bottom: none !important; min-width: 0px !important">
 			<span class="pf-label">Mentor Count</span>
       <%= f.text_field(:mentors, :size => 5, :maxlength => 100, :class=>"pf-field icount") %>
 		</div>

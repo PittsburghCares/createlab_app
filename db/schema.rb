@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130116212222) do
+ActiveRecord::Schema.define(:version => 20130121231821) do
 
   create_table "events", :force => true do |t|
     t.text     "name"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20130116212222) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "mentors",           :default => 0
+    t.integer  "waitlisted",        :default => 0
   end
 
   add_index "events", ["page_id"], :name => "index_events_on_page_id"

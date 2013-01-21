@@ -162,7 +162,10 @@ $(document).ready(function () {
 				} else if (filter_query.indexOf("Mentors") != -1) {
 					age_total_count = numberWithCommas(data[0].total_mentors)
 					age_filter_query = "mentors"
-				}
+				} else if (filter_query.indexOf("Waitlisted") != -1) {
+          age_total_count = numberWithCommas(data[0].total_waitlisted)
+          age_filter_query = "waitlisted"
+        }
 
 				totalPeople = age_total_count;
 				people_filter_choice = ""
@@ -230,7 +233,8 @@ $(document).ready(function () {
 			if (data[1].current_selection_middle_school > 0) people_stats += "<li>" + numberWithCommas(data[1].current_selection_middle_school) + " Middle School" + "</li>"
 			if (data[1].current_selection_high_school > 0) people_stats += "<li>" + numberWithCommas(data[1].current_selection_high_school) + " Highschool" + "</li>"
 			if (data[1].current_selection_adults > 0) people_stats += "<li>" + numberWithCommas(data[1].current_selection_adults) + " Adults" + "</li>"
-            if (data[1].current_selection_mentors > 0) people_stats += "<li>" + numberWithCommas(data[1].current_selection_mentors) + " mentors" + "</li>"
+      if (data[1].current_selection_mentors > 0) people_stats += "<li>" + numberWithCommas(data[1].current_selection_mentors) + " Mentors" + "</li>"
+      if (data[1].current_selection_waitlisted > 0) people_stats += "<li>" + numberWithCommas(data[1].current_selection_waitlisted) + " Waitlisted" + "</li>"
 			$("#list_current_selection_people_stats").append(people_stats);
 
 			people_stats = ""
@@ -240,7 +244,8 @@ $(document).ready(function () {
 				if (data[0].total_middle_school > 0) people_stats += "<li>" + numberWithCommas(data[0].total_middle_school) + " Middle School" + "</li>"
 				if (data[0].total_high_school > 0) people_stats += "<li>" + numberWithCommas(data[0].total_high_school) + " Highschool" + "</li>"
 				if (data[0].total_adults > 0) people_stats += "<li>" + numberWithCommas(data[0].total_adults) + " Adults" + "</li>"
-                if (data[0].total_mentors > 0) people_stats += "<li>" + numberWithCommas(data[0].total_mentors) + " Mentors" + "</li>"
+        if (data[0].total_mentors > 0) people_stats += "<li>" + numberWithCommas(data[0].total_mentors) + " Mentors" + "</li>"
+        if (data[0].total_waitlisted > 0) people_stats += "<li>" + numberWithCommas(data[0].total_waitlisted) + " Waitlisted" + "</li>"
 				$("#list_total_people_stats").append(people_stats);
 			}
 
