@@ -530,6 +530,7 @@ div.auto_complete {
   background: none repeat scroll 0 0 #FFFFFF;
   width: 350px;
   z-index: 500;
+  top: inherit !important;
 }
 
 div.auto_complete ul {

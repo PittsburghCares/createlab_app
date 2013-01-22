@@ -10,7 +10,7 @@ class Event < ActiveRecord::Base
   #validates_uniqueness_of :name
   validates_presence_of :name
   validates_presence_of :page_id
-  validates_presence_of :location
+  #validates_presence_of :location # Validated manually since this is a tag and not an actual field of an event
 
   named_scope :published, :conditions => {:is_published => true}
 

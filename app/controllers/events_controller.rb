@@ -281,8 +281,10 @@ class EventsController < ApplicationController
     event_users = []
     event_users << current_user
 
+    @event.errors.add(:location, "can't be blank" ) if params[:event][:location].first.blank?
+
     respond_to do |format|
-      if @event.save
+      if @event.errors.empty? && @event.save
         expire_fragment('all_funders')
         expire_fragment('all_projects')
         Rails.cache.delete('total_stats')
