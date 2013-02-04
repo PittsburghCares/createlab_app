@@ -46,8 +46,11 @@ class InterpolationsTest < Test::Unit::TestCase
   should "return the extension of the file as the format if defined in the style" do
     attachment = mock
     attachment.expects(:original_filename).never
-    attachment.expects(:styles).returns({:style => {:format => "png"}})
-    assert_equal "png", Paperclip::Interpolations.extension(attachment, :style)
+    attachment.expects(:styles).twice.returns({:style => {:format => "png"}})
+
+    [:style, 'style'].each do |style|
+      assert_equal "png", Paperclip::Interpolations.extension(attachment, style)
+    end
   end
 
   should "return the extension of the file based on the content type" do
@@ -88,6 +91,13 @@ class InterpolationsTest < Test::Unit::TestCase
     assert_equal 23, Paperclip::Interpolations.id(attachment, :style)
   end
 
+  should "return nil for attachments to new records" do
+    attachment = mock
+    attachment.expects(:id).returns(nil)
+    attachment.expects(:instance).returns(attachment)
+    assert_nil Paperclip::Interpolations.id(attachment, :style)
+  end
+
   should "return the partitioned id of the attachment when the id is an integer" do
     attachment = mock
     attachment.expects(:id).returns(23)
@@ -100,6 +110,13 @@ class InterpolationsTest < Test::Unit::TestCase
     attachment.expects(:id).returns("32fnj23oio2f")
     attachment.expects(:instance).returns(attachment)
     assert_equal "32f/nj2/3oi", Paperclip::Interpolations.id_partition(attachment, :style)
+  end
+
+  should "return nil for the partitioned id of an attachment to a new record (when the id is nil)" do
+    attachment = mock
+    attachment.expects(:id).returns(nil)
+    attachment.expects(:instance).returns(attachment)
+    assert_nil Paperclip::Interpolations.id_partition(attachment, :style)
   end
 
   should "return the name of the attachment" do
@@ -120,7 +137,7 @@ class InterpolationsTest < Test::Unit::TestCase
 
   should "reinterpolate :url" do
     attachment = mock
-    attachment.expects(:url).with(:style, false).returns("1234")
+    attachment.expects(:url).with(:style, :timestamp => false, :escape => false).returns("1234")
     assert_equal "1234", Paperclip::Interpolations.url(attachment, :style)
   end
 
@@ -181,14 +198,14 @@ class InterpolationsTest < Test::Unit::TestCase
   should "return attachment's hash when passing both arguments" do
     attachment = mock
     fake_hash = "a_wicked_secure_hash"
-    attachment.expects(:hash).returns(fake_hash)
+    attachment.expects(:hash_key).returns(fake_hash)
     assert_equal fake_hash, Paperclip::Interpolations.hash(attachment, :style)
   end
 
   should "return Object#hash when passing no argument" do
     attachment = mock
     fake_hash = "a_wicked_secure_hash"
-    attachment.expects(:hash).never.returns(fake_hash)
+    attachment.expects(:hash_key).never.returns(fake_hash)
     assert_not_equal fake_hash, Paperclip::Interpolations.hash
   end
 

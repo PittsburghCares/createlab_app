@@ -41,15 +41,17 @@ module Paperclip
         end unless defined?(Fog)
 
         base.instance_eval do
-          unless @options.url.to_s.match(/^:fog.*url$/)
-            @options.path  = @options.path.gsub(/:url/, @options.url)
-            @options.url   = ':fog_public_url'
+          unless @options[:url].to_s.match(/^:fog.*url$/)
+            @options[:path]  = @options[:path].gsub(/:url/, @options[:url])
+            @options[:url]   = ':fog_public_url'
           end
           Paperclip.interpolates(:fog_public_url) do |attachment, style|
             attachment.public_url(style)
           end unless Paperclip::Interpolations.respond_to? :fog_public_url
         end
       end
+
+      AWS_BUCKET_SUBDOMAIN_RESTRICTON_REGEX = /^(?:[a-z]|\d(?!\d{0,2}(?:\.\d{1,3}){3}$))(?:[a-z0-9]|\.(?![\.\-])|\-(?![\.])){1,61}[a-z0-9]$/
 
       def exists?(style = default_style)
         if original_filename
@@ -60,15 +62,16 @@ module Paperclip
       end
 
       def fog_credentials
-        @fog_credentials ||= parse_credentials(@options.fog_credentials)
+        @fog_credentials ||= parse_credentials(@options[:fog_credentials])
       end
 
       def fog_file
-        @fog_file ||= @options.fog_file || {}
+        @fog_file ||= @options[:fog_file] || {}
       end
 
       def fog_public
-        @fog_public ||= @options.fog_public || true
+        return @fog_public if defined?(@fog_public)
+        @fog_public = defined?(@options[:fog_public]) ? @options[:fog_public] : true
       end
 
       def flush_writes
@@ -77,9 +80,10 @@ module Paperclip
           retried = false
           begin
             directory.files.create(fog_file.merge(
-              :body   => file,
-              :key    => path(style),
-              :public => fog_public
+              :body         => file,
+              :key          => path(style),
+              :public       => fog_public,
+              :content_type => file.content_type.to_s.strip
             ))
           rescue Excon::Errors::NotFound
             raise if retried
@@ -106,6 +110,7 @@ module Paperclip
       # style, in the format most representative of the current storage.
       def to_file(style = default_style)
         if @queued_for_write[style]
+          @queued_for_write[style].rewind
           @queued_for_write[style]
         else
           body      = directory.files.get(path(style)).body
@@ -121,11 +126,25 @@ module Paperclip
       end
 
       def public_url(style = default_style)
-        if @options.fog_host
-          host = (@options.fog_host =~ /%d/) ? @options.fog_host % (path(style).hash % 4) : @options.fog_host
+        if @options[:fog_host]
+          host = if @options[:fog_host].respond_to?(:call)
+            @options[:fog_host].call(self)
+          else
+            (@options[:fog_host] =~ /%d/) ? @options[:fog_host] % (path(style).hash % 4) : @options[:fog_host]
+          end
+          
           "#{host}/#{path(style)}"
         else
-          directory.files.new(:key => path(style)).public_url
+          if fog_credentials[:provider] == 'AWS'
+            if @options[:fog_directory].to_s =~ Fog::AWS_BUCKET_SUBDOMAIN_RESTRICTON_REGEX
+              "https://#{@options[:fog_directory]}.s3.amazonaws.com/#{path(style)}"
+            else
+              # directory is not a valid subdomain, so use path style for access
+              "https://s3.amazonaws.com/#{@options[:fog_directory]}/#{path(style)}"
+            end
+          else
+            directory.files.new(:key => path(style)).public_url
+          end
         end
       end
 
@@ -146,7 +165,11 @@ module Paperclip
         when Hash
           creds
         else
-          raise ArgumentError, "Credentials are not a path, file, or hash."
+          if creds.respond_to?(:call)
+            creds.call(self)
+          else
+            raise ArgumentError, "Credentials are not a path, file, hash or proc."
+          end
         end
       end
 
@@ -155,7 +178,13 @@ module Paperclip
       end
 
       def directory
-        @directory ||= connection.directories.new(:key => @options.fog_directory)
+        dir = if @options[:fog_directory].respond_to?(:call)
+          @options[:fog_directory].call(self)
+        else
+          @options[:fog_directory]
+        end
+        
+        @directory ||= connection.directories.new(:key => dir)
       end
     end
   end

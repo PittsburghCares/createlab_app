@@ -6,7 +6,7 @@ class FileSystemTest < Test::Unit::TestCase
       rebuild_model :styles => { :thumbnail => "25x25#" }
       @dummy = Dummy.create!
 
-      @dummy.avatar = File.open(File.join(File.dirname(__FILE__), "..", "fixtures", "5k.png"))
+      @dummy.avatar = File.open(fixture_file('5k.png'))
     end
 
     should "allow file assignment" do
@@ -31,12 +31,18 @@ class FileSystemTest < Test::Unit::TestCase
       @dummy.save!
     end
 
+    should "always be rewound when returning from #to_file" do
+      assert_equal 0, @dummy.avatar.to_file.pos
+      @dummy.avatar.to_file.seek(10)
+      assert_equal 0, @dummy.avatar.to_file.pos
+    end
+        
     context "with file that has space in file name" do
       setup do
         rebuild_model :styles => { :thumbnail => "25x25#" }
         @dummy = Dummy.create!
 
-        @dummy.avatar = File.open(File.join(File.dirname(__FILE__), "..", "fixtures", "spaced file.png"))
+        @dummy.avatar = File.open(fixture_file('spaced file.png'))
         @dummy.save
       end
 
@@ -44,12 +50,12 @@ class FileSystemTest < Test::Unit::TestCase
         assert File.exists?(@dummy.avatar.path)
       end
 
-      should "store the path unescaped" do
-        assert_match /\/spaced file\.png/, @dummy.avatar.path
+      should "return a replaced version for path" do
+        assert_match /.+\/spaced_file\.png/, @dummy.avatar.path
       end
 
-      should "return an escaped version of URL" do
-        assert_match /\/spaced%20file\.png/, @dummy.avatar.url
+      should "return a replaced version for url" do
+        assert_match /.+\/spaced_file\.png/, @dummy.avatar.url
       end
     end
   end

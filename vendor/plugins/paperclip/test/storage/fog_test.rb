@@ -12,9 +12,9 @@ class FogTest < Test::Unit::TestCase
                       :storage => :fog,
                       :url => '/:attachment/:filename',
                       :fog_directory => "paperclip",
-                      :fog_credentials => File.join(File.dirname(__FILE__), 'fixtures', 'fog.yml')
+                      :fog_credentials => fixture_file('fog.yml')
         @dummy = Dummy.new
-        @dummy.avatar = File.new(File.join(File.dirname(__FILE__), 'fixtures', '5k.png'), 'rb')
+        @dummy.avatar = File.new(fixture_file('5k.png'), 'rb')
       end
 
       should "have the proper information loading credentials from a file" do
@@ -28,9 +28,9 @@ class FogTest < Test::Unit::TestCase
                       :storage => :fog,
                       :url => '/:attachment/:filename',
                       :fog_directory => "paperclip",
-                      :fog_credentials => File.open(File.join(File.dirname(__FILE__), 'fixtures', 'fog.yml'))
+                      :fog_credentials => File.open(fixture_file('fog.yml'))
         @dummy = Dummy.new
-        @dummy.avatar = File.new(File.join(File.dirname(__FILE__), 'fixtures', '5k.png'), 'rb')
+        @dummy.avatar = File.new(fixture_file('5k.png'), 'rb')
       end
 
       should "have the proper information loading credentials from a file" do
@@ -50,10 +50,10 @@ class FogTest < Test::Unit::TestCase
                         :aws_secret_access_key => 'AWS_SECRET'
                       }
         @dummy = Dummy.new
-        @dummy.avatar = File.new(File.join(File.dirname(__FILE__), 'fixtures', '5k.png'), 'rb')
+        @dummy.avatar = File.new(fixture_file('5k.png'), 'rb')
       end
       should "be able to interpolate the path without blowing up" do
-        assert_equal File.expand_path(File.join(File.dirname(__FILE__), "../public/avatars/5k.png")),
+        assert_equal File.expand_path(File.join(File.dirname(__FILE__), "../../public/avatars/5k.png")),
                      @dummy.avatar.path
       end
 
@@ -98,7 +98,7 @@ class FogTest < Test::Unit::TestCase
 
     context "when assigned" do
       setup do
-        @file = File.new(File.join(File.dirname(__FILE__), 'fixtures', '5k.png'), 'rb')
+        @file = File.new(fixture_file('5k.png'), 'rb')
         @dummy = Dummy.new
         @dummy.avatar = @file
       end
@@ -108,6 +108,19 @@ class FogTest < Test::Unit::TestCase
         directory = @connection.directories.new(:key => @fog_directory)
         directory.files.each {|file| file.destroy}
         directory.destroy
+      end
+
+      should "always be rewound when returning from #to_file" do
+        assert_equal 0, @dummy.avatar.to_file.pos
+        @dummy.avatar.to_file.seek(10)
+        assert_equal 0, @dummy.avatar.to_file.pos
+      end
+            
+      should "pass the content type to the Fog::Storage::AWS::Files instance" do
+        Fog::Storage::AWS::Files.any_instance.expects(:create).with do |hash|
+          hash[:content_type]
+        end
+        @dummy.save
       end
 
       context "without a bucket" do
@@ -181,10 +194,86 @@ class FogTest < Test::Unit::TestCase
         end
 
         should 'set the @fog_public instance variable to false' do
-          assert_equal false, @dummy.avatar.options.fog_public
+          assert_equal false, @dummy.avatar.instance_variable_get('@options')[:fog_public]
+          assert_equal false, @dummy.avatar.fog_public
         end
       end
 
+      context "with a valid bucket name for a subdomain" do
+        should "provide an url in subdomain style" do
+          assert_match /^https:\/\/papercliptests.s3.amazonaws.com\/avatars\/5k.png\?\d*$/, @dummy.avatar.url
+        end
+      end
+
+      context "with an invalid bucket name for a subdomain" do
+        setup do
+          rebuild_model(@options.merge(:fog_directory => "this_is_invalid"))
+          @dummy = Dummy.new
+          @dummy.avatar = @file
+          @dummy.save
+        end
+
+        should "not match the bucket-subdomain restrictions" do
+          invalid_subdomains = %w(this_is_invalid in iamareallylongbucketnameiamareallylongbucketnameiamareallylongbu invalid- inval..id inval-.id inval.-id -invalid 192.168.10.2)
+          invalid_subdomains.each do |name|
+            assert_no_match Paperclip::Storage::Fog::AWS_BUCKET_SUBDOMAIN_RESTRICTON_REGEX, name
+          end
+        end
+
+        should "provide an url in folder style" do
+          assert_match /^https:\/\/s3.amazonaws.com\/this_is_invalid\/avatars\/5k.png\?\d*$/, @dummy.avatar.url
+        end
+
+      end
+
+      context "with a proc for a bucket name evaluating a model method" do
+        setup do
+          @dynamic_fog_directory = 'dynamicpaperclip'
+          rebuild_model(@options.merge(:fog_directory => lambda { |attachment| attachment.instance.bucket_name }))
+          @dummy = Dummy.new
+          @dummy.stubs(:bucket_name).returns(@dynamic_fog_directory)
+          @dummy.avatar = @file
+          @dummy.save
+        end
+
+        should "have created the bucket" do
+          assert @connection.directories.get(@dynamic_fog_directory).inspect
+        end
+
+      end
+
+      context "with a proc for the fog_host evaluating a model method" do
+        setup do
+          rebuild_model(@options.merge(:fog_host => lambda { |attachment| attachment.instance.fog_host }))
+          @dummy = Dummy.new
+          @dummy.stubs(:fog_host).returns('http://dynamicfoghost.com')
+          @dummy.avatar = @file
+          @dummy.save
+        end
+
+        should "provide a public url" do
+          assert_match /http:\/\/dynamicfoghost\.com/, @dummy.avatar.url
+        end
+      end
+
+      context "with a proc for the fog_credentials evaluating a model method" do
+        setup do
+          @dynamic_fog_credentials = {
+            :provider               => 'AWS',
+            :aws_access_key_id      => 'DYNAMIC_ID',
+            :aws_secret_access_key  => 'DYNAMIC_SECRET'
+          }
+          rebuild_model(@options.merge(:fog_credentials => lambda { |attachment| attachment.instance.fog_credentials }))
+          @dummy = Dummy.new
+          @dummy.stubs(:fog_credentials).returns(@dynamic_fog_credentials)
+          @dummy.avatar = @file
+          @dummy.save
+        end
+
+        should "provide a public url" do
+          assert_equal @dummy.avatar.fog_credentials, @dynamic_fog_credentials
+        end
+      end
     end
 
   end

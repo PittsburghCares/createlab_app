@@ -1,5 +1,3 @@
-require 'paperclip/interpolated_string'
-
 module Paperclip
   # This module contains all the methods that are available for interpolation
   # in paths and urls. To add your own (or override an existing one), you
@@ -31,13 +29,11 @@ module Paperclip
     # an interpolation pattern for Paperclip to use.
     def self.interpolate pattern, *args
       pattern = args.first.instance.send(pattern) if pattern.kind_of? Symbol
-      interpolated_string = all.reverse.inject(InterpolatedString.new(pattern)) do |result, tag|
+      all.reverse.inject(pattern) do |result, tag|
         result.gsub(/:#{tag}/) do |match|
           send( tag, *args )
         end
       end
-      interpolated_string.force_escape if pattern =~ /:url/
-      interpolated_string
     end
 
     # Returns the filename, the same way as ":basename.:extension" would.
@@ -51,7 +47,7 @@ module Paperclip
     RIGHT_HERE = "#{__FILE__.gsub(%r{^\./}, "")}:#{__LINE__ + 3}"
     def url attachment, style_name
       raise InfiniteInterpolationError if caller.any?{|b| b.index(RIGHT_HERE) }
-      attachment.url(style_name, false)
+      attachment.url(style_name, :timestamp => false, :escape => false)
     end
 
     # Returns the timestamp as defined by the <attachment>_updated_at field
@@ -97,7 +93,7 @@ module Paperclip
     # If the style has a format defined, it will return the format instead
     # of the actual extension.
     def extension attachment, style_name
-      ((style = attachment.styles[style_name]) && style[:format]) ||
+      ((style = attachment.styles[style_name.to_sym]) && style[:format]) ||
         File.extname(attachment.original_filename).gsub(/^\.+/, "")
     end
 
@@ -141,11 +137,11 @@ module Paperclip
       attachment.fingerprint
     end
 
-    # Returns a the attachment hash.  See Paperclip::Attachment#hash for
+    # Returns a the attachment hash.  See Paperclip::Attachment#hash_key for
     # more details.
     def hash attachment=nil, style_name=nil
       if attachment && style_name
-        attachment.hash(style_name)
+        attachment.hash_key(style_name)
       else
         super()
       end
@@ -154,10 +150,13 @@ module Paperclip
     # Returns the id of the instance in a split path form. e.g. returns
     # 000/001/234 for an id of 1234.
     def id_partition attachment, style_name
-      if (id = attachment.instance.id).is_a?(Integer)
+      case id = attachment.instance.id
+      when Integer
         ("%09d" % id).scan(/\d{3}/).join("/")
-      else
+      when String
         id.scan(/.{3}/).first(3).join("/")
+      else
+        nil
       end
     end
 

@@ -24,6 +24,14 @@ class PaperclipTest < Test::Unit::TestCase
     end
   end
 
+  should 'not raise errors when doing a lot of running' do
+    Paperclip.options[:command_path] = ["/usr/local/bin"] * 1024
+    Cocaine::CommandLine.path = "/something/else"
+    100.times do |x|
+      Paperclip.run("echo", x.to_s)
+    end
+  end
+
   context "Calling Paperclip.run with a logger" do
     should "pass the defined logger if :log_command is set" do
       Paperclip.options[:log_command] = true
@@ -84,6 +92,16 @@ class PaperclipTest < Test::Unit::TestCase
       end
       Dummy2.class_eval do
         has_attached_file :blah
+      end
+    end
+
+    should "not generate warning if attachment is redifined with the same url string but has :class in it" do
+      Paperclip.expects(:log).never
+      Dummy.class_eval do
+        has_attached_file :blah, :url => "/system/:class/:attachment/:id/:style/:filename"
+      end
+      Dummy2.class_eval do
+        has_attached_file :blah, :url => "/system/:class/:attachment/:id/:style/:filename"
       end
     end
   end
@@ -170,38 +188,78 @@ class PaperclipTest < Test::Unit::TestCase
     end
 
     context "a validation with an if guard clause" do
-      setup do
-        Dummy.send(:"validates_attachment_presence", :avatar, :if => lambda{|i| i.foo })
-        @dummy = Dummy.new
-        @dummy.stubs(:avatar_file_name).returns(nil)
+      context "as a lambda" do
+        setup do
+          Dummy.send(:"validates_attachment_presence", :avatar, :if => lambda{|i| i.foo })
+          @dummy = Dummy.new
+          @dummy.stubs(:avatar_file_name).returns(nil)
+        end
+
+        should "attempt validation if the guard returns true" do
+          @dummy.expects(:foo).returns(true)
+          assert ! @dummy.valid?
+        end
+
+        should "not attempt validation if the guard returns false" do
+          @dummy.expects(:foo).returns(false)
+          assert @dummy.valid?
+        end
       end
 
-      should "attempt validation if the guard returns true" do
-        @dummy.expects(:foo).returns(true)
-        assert ! @dummy.valid?
-      end
+      context "as a method name" do
+        setup do
+          Dummy.send(:"validates_attachment_presence", :avatar, :if => :foo)
+          @dummy = Dummy.new
+          @dummy.stubs(:avatar_file_name).returns(nil)
+        end
 
-      should "not attempt validation if the guard returns false" do
-        @dummy.expects(:foo).returns(false)
-        assert @dummy.valid?
+        should "attempt validation if the guard returns true" do
+          @dummy.expects(:foo).returns(true)
+          assert ! @dummy.valid?
+        end
+
+        should "not attempt validation if the guard returns false" do
+          @dummy.expects(:foo).returns(false)
+          assert @dummy.valid?
+        end
       end
     end
 
     context "a validation with an unless guard clause" do
-      setup do
-        Dummy.send(:"validates_attachment_presence", :avatar, :unless => lambda{|i| i.foo })
-        @dummy = Dummy.new
-        @dummy.stubs(:avatar_file_name).returns(nil)
+      context "as a lambda" do
+        setup do
+          Dummy.send(:"validates_attachment_presence", :avatar, :unless => lambda{|i| i.foo })
+          @dummy = Dummy.new
+          @dummy.stubs(:avatar_file_name).returns(nil)
+        end
+
+        should "attempt validation if the guard returns true" do
+          @dummy.expects(:foo).returns(false)
+          assert ! @dummy.valid?
+        end
+
+        should "not attempt validation if the guard returns false" do
+          @dummy.expects(:foo).returns(true)
+          assert @dummy.valid?
+        end
       end
 
-      should "attempt validation if the guard returns true" do
-        @dummy.expects(:foo).returns(false)
-        assert ! @dummy.valid?
-      end
+      context "as a method name" do
+        setup do
+          Dummy.send(:"validates_attachment_presence", :avatar, :unless => :foo)
+          @dummy = Dummy.new
+          @dummy.stubs(:avatar_file_name).returns(nil)
+        end
 
-      should "not attempt validation if the guard returns false" do
-        @dummy.expects(:foo).returns(true)
-        assert @dummy.valid?
+        should "attempt validation if the guard returns true" do
+          @dummy.expects(:foo).returns(false)
+          assert ! @dummy.valid?
+        end
+
+        should "not attempt validation if the guard returns false" do
+          @dummy.expects(:foo).returns(true)
+          assert @dummy.valid?
+        end
       end
     end
 
@@ -225,6 +283,7 @@ class PaperclipTest < Test::Unit::TestCase
           end
           if validation == :presence
             should "have an error on the attachment" do
+              assert @dummy.errors[:avatar]
               assert @dummy.errors[:avatar_file_name]
             end
           else
@@ -238,7 +297,7 @@ class PaperclipTest < Test::Unit::TestCase
             @dummy.avatar = valid_file
             @dummy.valid?
           end
-          should "not have an error when assigned a valid file" do
+          should "not have an error" do
             assert_equal 0, @dummy.errors.size, @dummy.errors.full_messages.join(", ")
           end
         end
@@ -247,7 +306,7 @@ class PaperclipTest < Test::Unit::TestCase
             @dummy.avatar = invalid_file
             @dummy.valid?
           end
-          should "have an error when assigned a valid file" do
+          should "have an error" do
             assert @dummy.errors.size > 0
           end
         end

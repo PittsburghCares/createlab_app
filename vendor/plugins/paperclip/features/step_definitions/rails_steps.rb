@@ -10,7 +10,7 @@ Given /^I generate a new rails application$/ do
       gem "sqlite3"
       gem "capybara"
       gem "gherkin"
-      gem "aws-s3"
+      gem "aws-sdk"
       """
     And I configure the application to use "paperclip" from this project
     And I reset Bundler environment variable
@@ -19,15 +19,15 @@ Given /^I generate a new rails application$/ do
 end
 
 Given /^I run a rails generator to generate a "([^"]*)" scaffold with "([^"]*)"$/ do |model_name, attributes|
-  Given %[I successfully run `bundle exec #{generator_command} scaffold #{model_name} #{attributes}`]
+  step %[I successfully run `bundle exec #{generator_command} scaffold #{model_name} #{attributes}`]
 end
 
 Given /^I run a paperclip generator to add a paperclip "([^"]*)" to the "([^"]*)" model$/ do |attachment_name, model_name|
-  Given %[I successfully run `bundle exec #{generator_command} paperclip #{model_name} #{attachment_name}`]
+  step %[I successfully run `bundle exec #{generator_command} paperclip #{model_name} #{attachment_name}`]
 end
 
 Given /^I run a migration$/ do
-  Given %[I successfully run `bundle exec rake db:migrate`]
+  step %[I successfully run `bundle exec rake db:migrate`]
 end
 
 Given /^I update my new user view to include the file upload field$/ do
@@ -71,11 +71,7 @@ Given /^I update my user view to include the attachment$/ do
 end
 
 Given /^I add this snippet to the User model:$/ do |snippet|
-  file_name = "app/models/user.rb"
-  in_current_dir do
-    content = File.read(file_name)
-    File.open(file_name, 'w') { |f| f << content.sub(/end\Z/, "#{snippet}\nend") }
-  end
+  insert_snippet_into_file("app/models/user.rb", snippet)
 end
 
 Given /^I start the rails application$/ do
@@ -113,6 +109,22 @@ Given /^I update my application to use Bundler$/ do
   end
 end
 
+Given /^I add attr_accessible to a Rails 3.2 application$/ do
+  if framework_version?("3.2")
+    insert_snippet_into_file("app/models/user.rb", "attr_accessible :attachment\n")
+  end
+end
+
+Given /^I add the paperclip rake task to a Rails 2.3 application$/ do
+  if framework_version?("2.3")
+    require 'fileutils'
+    source = File.expand_path('lib/tasks/paperclip.rake')
+    destination = in_current_dir { File.expand_path("lib/tasks") }
+    FileUtils.cp source, destination
+    append_to "Rakefile", "require 'paperclip'"
+  end
+end
+
 Then /^the file at "([^"]*)" should be the same as "([^"]*)"$/ do |web_file, path|
   expected = IO.read(path)
   actual = if web_file.match %r{^https?://}
@@ -147,6 +159,14 @@ When /^I comment out the gem "([^"]*)" from the Gemfile$/ do |gemname|
 end
 
 module FileHelpers
+  def insert_snippet_into_file(file_name, snippet)
+    in_current_dir do
+      content = File.read(file_name)
+      File.open(file_name, 'w') { |f| f << content.sub(/end\Z/, "#{snippet}\nend") }
+      content = File.read(file_name)
+    end
+  end
+
   def append_to(path, contents)
     in_current_dir do
       File.open(path, "a") do |file|
