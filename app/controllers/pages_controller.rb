@@ -101,11 +101,12 @@ class PagesController < ApplicationController
     @funders = Funder.all
 
     params[:funder_ids].to_a.each do |funder_id|
-    @page.funders << Funder.find_by_id(funder_id)
+      @page.funders << Funder.find_by_id(funder_id)
     end
 
     respond_to do |format|
       if @page.save
+        expire_fragment('all_funders')
         if params[:page][:page_image_attributes].blank? || params[:page][:page_image_attributes][:image].blank?
           if session[:from_event]
             session[:from_event] = nil
@@ -136,6 +137,7 @@ class PagesController < ApplicationController
     end
     respond_to do |format|
       if @page.update_attributes(params[:page])
+        expire_fragment('all_funders')
         if params[:page][:page_image_attributes].blank? || params[:page][:page_image_attributes][:image].blank?
           if session[:from_event]
             format.html { redirect_to(new_event_path, :notice => "#{$pages_name_replacement.singularize.capitalize} was successfully created.") }

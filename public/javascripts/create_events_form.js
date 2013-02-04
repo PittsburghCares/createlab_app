@@ -17,7 +17,8 @@ function hide_page_related_fields() {
 function calculate_total_participants() {
   var total_count = 0;
   jQuery(".icount").each(function( index, item ) {
-    total_count += parseInt(jQuery(item).val());
+    if (jQuery(item).val())
+      total_count += parseInt(jQuery(item).val());
   });
   jQuery('#total_count').text(total_count);
 }
