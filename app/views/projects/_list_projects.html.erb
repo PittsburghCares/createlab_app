@@ -23,7 +23,7 @@
 
 	<% @projects.each do |project| %>
 		<tr>
-			<td width="300"><%=h project.name %></td>
+      <td width="300"><%=h project.name %><br><% unless project.is_published %><span style="color: red; font-size:12px">(Unpublished)</span><% end %></td>
 			<td width="500"><%=h project.description %></td>
 			<% if current_user.is_admin? %>
         <td><%= link_to(image_tag("edit.gif", :border =>0, :title => "Edit this #{$projects_name_replacement.singularize}") ,:action => :edit,  :id  =>  project.id) %></td>

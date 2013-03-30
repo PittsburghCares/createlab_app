@@ -24,7 +24,7 @@
 
 	<% @pages.each do |page| %>
 		<tr>
-      <td width="300"><%=h page.name %> <br/><small>(<%= $projects_name_replacement.singularize.capitalize %>: <%=h page.project.name %>)</small></td>
+      <td width="300"><%=h page.name %> <br/><small>(<%= $projects_name_replacement.singularize.capitalize %>: <%=h page.project.name %>)</small><br/><% unless page.is_published %><span style="color: red; font-size:12px">(Unpublished)</span><% end %></td>
 			<td width="300"><%=h page.funder_list %></td>
 			<td width="500"><%= page.description %></td>
 			<% if current_user.is_admin? %>
