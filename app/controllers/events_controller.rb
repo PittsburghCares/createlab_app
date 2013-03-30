@@ -299,6 +299,7 @@ class EventsController < ApplicationController
           unless location
             location = Location.new
             location.name = @event.location.first.name
+            sleep(1) #ensure requests are made only once per second, in the event we are flooded with form submissions. Google gets mad if requests are too frequent
             res=Geokit::Geocoders::MultiGeocoder.geocode("#{location.name}")
             location.lat = res.lat
             location.lng = res.lng
@@ -358,6 +359,7 @@ class EventsController < ApplicationController
           unless location
             location = Location.new
             location.name = @event.location.first.name
+            sleep(1) #ensure requests are made only once per second, in the event we are flooded with form submissions. Google gets mad if requests are too frequent
             res=Geokit::Geocoders::MultiGeocoder.geocode("#{location.name}")
             location.lat = res.lat
             location.lng = res.lng

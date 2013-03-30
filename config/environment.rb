@@ -13,7 +13,6 @@ require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
 
-  config.gem "geokit", :version => '1.6.5'
   config.gem "cocaine", :version => '0.3.0'
   config.gem "multi_json", :version => '1.3.6'
   config.gem "mysql2", :version => '0.2.18' # NOTE: OS specific, so must be installed manually (i.e. this isn't already bundled)
